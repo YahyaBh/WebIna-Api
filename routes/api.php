@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -20,8 +20,8 @@ Route::post('/register/email', [HomeController::class, 'registerEmail']);
 
 
 //User regsitration routes
-Route::post('/register', [RegisteredUserController::class, 'store']);
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/register', [UserController::class, 'createUser']);
+Route::post('/login', [UserController::class, 'loginUser']);
 
 
 
@@ -30,7 +30,6 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Protected routes that require authentication
-
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 });
