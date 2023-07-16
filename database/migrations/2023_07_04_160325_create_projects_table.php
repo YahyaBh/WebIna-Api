@@ -16,7 +16,11 @@ return new class extends Migration
             $table->string('image');
             $table->string('name');
             $table->string('description');
+            $table->string('owner');
+            $table->string('technologies');
             $table->string('categories');
+            $table->enum('status' , ['finished' , 'progress'],);
+            $table->string('date');
             $table->timestamps();
         });
     }

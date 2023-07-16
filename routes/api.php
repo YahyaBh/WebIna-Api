@@ -14,7 +14,7 @@ Route::get('/', function () {
 
 
 //Home page routes 
-Route::get('/testimonials', [HomeController::class, 'testimonials']);
+Route::get('/home', [HomeController::class, 'home_ret']);
 Route::post('/contact', [HomeController::class, 'contactSend']);
 Route::post('/register/email', [HomeController::class, 'registerEmail']);
 

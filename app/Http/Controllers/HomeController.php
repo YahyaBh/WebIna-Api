@@ -13,35 +13,19 @@ class HomeController extends Controller
 {
 
 
-    public function testimonials()
+    public function home_ret()
     {
         $testimonials = testimonials::take(6)->get();
-
-
-        return response()->json([
-            'testimonials' => $testimonials
-        ], 200);
-    }
-
-    public function blogs()
-    {
+        $projects = projects::take(3)->get();
         $blogs = blogs::take(4)->get();
 
-        return response()->json([
-            'blogs' => $blogs
-        ], 200);
-    }
-
-
-    public function projects()
-    {
-        $projects = projects::take(3)->get();
 
         return response()->json([
+            'testimonials' => $testimonials,
+            'blogs' => $blogs,
             'projects' => $projects
         ], 200);
     }
-
 
 
     public function registerEmail(Request $request)
