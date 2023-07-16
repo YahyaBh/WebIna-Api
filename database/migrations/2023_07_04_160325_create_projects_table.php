@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('owner');
             $table->string('technologies');
             $table->string('categories');
+            $table->string('url')->nullable();
             $table->enum('status' , ['finished' , 'progress'],);
             $table->string('date');
             $table->timestamps();
