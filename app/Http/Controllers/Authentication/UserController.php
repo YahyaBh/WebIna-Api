@@ -77,8 +77,9 @@ class UserController extends Controller
             
             $user = User::where('email', $request->email)->first();
 
+            
             $remember = $request->has('remember'); // Check if remember me checkbox is checked
-            $rememberToken = $user->remember_token;
+            // $rememberToken = $user->remember_token;
 
 
             if (!Auth::guard()->viaRemember()) {
@@ -95,7 +96,7 @@ class UserController extends Controller
                     'status' => true,
                     'message' => 'User Logged In Successfully',
                     'token' => $user->createToken("access-token")->plainTextToken,
-                    'remember_token' => $rememberToken,
+                    // 'remember_token' => $rememberToken,
                     'user' => $user
                 ], 200);
             } else {
@@ -103,7 +104,7 @@ class UserController extends Controller
                     'status' => true,
                     'message' => 'User Logged In Successfully',
                     'token' => $user->createToken("access-token")->plainTextToken,
-                    'remember_token' => $rememberToken,
+                    // 'remember_token' => $rememberToken,
                     'user' => $user
                 ], 200);
             }
