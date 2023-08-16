@@ -3,13 +3,16 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
 
 
 Route::get('/', function () {
-    return Redirect::to('https://webinadigital.com');;
+    return response()->json(([
+        'message' => 'Authentication'
+    ]));
 });
 
 
@@ -32,4 +35,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Protected routes that require authentication
 
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+
+    Route::post('/store', [StoreController::class, 'index']);
 });
