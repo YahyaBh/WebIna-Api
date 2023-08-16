@@ -31,6 +31,7 @@ Route::post('/login', [UserController::class, 'loginUser']);
 
 
 
+
 Route::middleware('auth:sanctum')->group(function () {
     // Protected routes that require authentication
 
