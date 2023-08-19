@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Mobile\MobileController;
 use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,8 @@ Route::post('/register', [UserController::class, 'createUser']);
 Route::post('/login', [UserController::class, 'loginUser']);
 
 
+
+Route::post('/mobile/signup/' , [MobileController::class , 'register']);
 
 
 
