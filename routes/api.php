@@ -17,6 +17,10 @@ Route::get('/', function () {
 });
 
 
+Route::get('/test' , function ( )  {
+    return 'HEY EVERY1';
+});
+
 //Home page routes 
 Route::get('/home', [HomeController::class, 'home_ret']);
 Route::post('/contact', [HomeController::class, 'contactSend']);
