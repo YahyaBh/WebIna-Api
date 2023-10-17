@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\HomeController;
@@ -8,18 +9,6 @@ use App\Http\Controllers\Store\StoreController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 
-
-
-Route::get('/', function () {
-    return response()->json(([
-        'message' => 'Authentication'
-    ]));
-});
-
-
-Route::get('/test' , function ( )  {
-    return 'HEY EVERY1';
-});
 
 //Home page routes 
 Route::get('/home', [HomeController::class, 'home_ret']);
@@ -33,16 +22,29 @@ Route::post('/login', [UserController::class, 'loginUser']);
 
 
 
-Route::post('/mobile/signup/' , [MobileController::class , 'register']);
+//Mobile routes
+Route::post('/mobile/signup/', [MobileController::class, 'register']);
 
 
+//Admin registration routes
+Route::post('/admin/login', [AdminController::class, 'login']);
 
 
 
 Route::middleware('auth:sanctum')->group(function () {
     // Protected routes that require authentication
 
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+    Route::post('/logout', [UserController::class, 'destroy']);
 
     Route::post('/store', [StoreController::class, 'index']);
+
+    Route::post('/store/home', [StoreController::class, 'index']);
+
+
+    //Admin routes that require admin authentication
+    Route::group(['middleware' => ['admin']], function () {
+        
+        Route::post('/dashboard', [AdminController::class, 'index']);
+    
+    });
 });

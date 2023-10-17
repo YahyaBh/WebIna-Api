@@ -19,12 +19,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://webinadigital.com'],
+    'allowed_origins' => ['http://localhost:3000'],
 
 
     'sanctum' => [
         // ...
-        'allowed_origins' => ['https://webinadigital.com'],
+        'allowed_origins' => ['http://localhost:3000'],
         // ...
     ],
 

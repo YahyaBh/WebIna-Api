@@ -91,4 +91,13 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function destroy(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        return response()->json([
+            'status' => 'logged off successfully'
+        ], 200);
+    }
 }
