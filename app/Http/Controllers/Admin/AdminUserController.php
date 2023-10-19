@@ -16,6 +16,12 @@ class AdminUserController extends Controller
 {
 
 
+    public function index()
+    {
+
+        $users = User::all()->count();
+    }
+
     public function register(Request $request)
     {
         try {
@@ -27,7 +33,7 @@ class AdminUserController extends Controller
                     'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
                     'password' => ['required', 'confirmed'],
                     'password_confirmation' => ['required_with:password|same,password|min:6'],
-                    'access_key' => ['required']
+                    'access_key' => ['required'],
                 ]
             );
 
@@ -50,13 +56,32 @@ class AdminUserController extends Controller
 
             if ($hashMatched !== '') {
 
-                $user = User::create([
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'role' => $hashMatched->role,
-                    'email_verified' => Date::now()
-                ]);
+                if ($request->has('avatar')) {
+                    $avatar = time() . '.' . $request->file->extension();
+                    $request->avatar->move(public_path('uploads/admins/avatar'), $avatar);
+
+
+                    $user = User::create([
+                        'avatar' => 'uploads/admins/avatar/' . $avatar,
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'role' => $hashMatched->role,
+                        'email_verified' => Date::now()
+                    ]);
+                } else {
+
+
+                    $user = User::create([
+                        'avatar' => 'uploads/admins/avatar/default_avatar.png',
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'role' => $hashMatched->role,
+                        'email_verified' => Date::now()
+                    ]);
+                }
+
 
                 Auth::login($user);
 
