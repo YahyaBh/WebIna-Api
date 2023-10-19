@@ -54,15 +54,15 @@ class AdminUserController extends Controller
                 }
             }
 
-            if ($hashMatched !== '') {
+            if ($hashMatched && $hashMatched !== '') {
 
                 if ($request->has('avatar')) {
-                    $avatar = time() . '.' . $request->file->extension();
-                    $request->avatar->move(public_path('uploads/admins/avatar'), $avatar);
+                    $avatar = time() . '.' . $request->avatar->getClientOriginalExtension();
+                    $request->avatar->move(public_path('images/admins/avatar'), $avatar);
 
 
                     $user = User::create([
-                        'avatar' => 'uploads/admins/avatar/' . $avatar,
+                        'avatar' => 'images/admins/avatar/' . $avatar,
                         'name' => $request->name,
                         'email' => $request->email,
                         'password' => Hash::make($request->password),
