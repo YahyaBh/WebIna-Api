@@ -25,9 +25,12 @@ Route::post('/mobile/signup/', [MobileController::class, 'register']);
 
 
 //Admin registration routes
-Route::post('/admin/login', [AdminUserController::class, 'login']);
+Route::post('/admin/login', [AdminUserController::class, 'loginUser']);
 Route::post('/admin/register', [AdminUserController::class, 'register']);
-Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
+
+
+//Admin routes that require admin authentication
+
 
 Route::middleware('auth:sanctum')->group(function () {
     // Protected routes that require authentication
@@ -39,12 +42,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/store/home', [StoreController::class, 'index']);
 
 
-
-
-
-    //Admin routes that require admin authentication
     Route::group(['middleware' => ['admin']], function () {
+        Route::post('/admin/dashboard', [AdminUserController::class, 'index']);
 
-        Route::post('/dashboard', [AdminUserController::class, 'index']);
+        Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
     });
 });

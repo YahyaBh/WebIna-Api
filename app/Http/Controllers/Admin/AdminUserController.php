@@ -20,6 +20,12 @@ class AdminUserController extends Controller
     {
 
         $users = User::all()->count();
+
+
+        return response()->json([
+            'status' => true,
+            'user_number' => $users,
+        ], 200);
     }
 
     public function register(Request $request)
@@ -105,9 +111,9 @@ class AdminUserController extends Controller
         }
     }
 
-    public function login(Request $request)
-    {
 
+    public function loginUser(Request $request)
+    {
         try {
             $validateUser = Validator::make(
                 $request->all(),
@@ -125,28 +131,14 @@ class AdminUserController extends Controller
                 ], 401);
             }
 
-            $user = User::where('email', $request->email)->first();
+            $user = User::where('email', $request->email)->where('role', 'admin')->first();
 
-            if ($user) {
-                if ($user->role != 'client') {
-                    return response()->json([
-                        'status' => true,
-                        'message' => 'User Logged In Successfully',
-                        'token' => $user->createToken("access-token")->plainTextToken,
-                        'admin' => $user
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Unauthorized Access',
-                    ], 405);
-                }
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'No user found',
-                ], 404);
-            }
+            return response()->json([
+                'status' => true,
+                'message' => 'User Logged In Successfully',
+                'token' => $user->createToken("access-token")->plainTextToken,
+                'admin' => $user
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,
