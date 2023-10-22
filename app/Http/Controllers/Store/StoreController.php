@@ -15,22 +15,22 @@ class StoreController extends Controller
     public function index()
     {
 
-        // try {
+        try {
 
             $products = Products::all();
 
             return response()->json([
                 'status' => 'success',
-                'products' => $products
+                'products' => $products,
             ], 200);
-        // } catch (Exception $e) {
+        } catch (Exception $e) {
 
-        //     $products = Products::all();
+            $products = Products::all();
 
-        //     return response()->json([
-        //         'status' => 'failed',
-        //         'products' => $e->getMessage()
-        //     ], 401);
-        // }
+            return response()->json([
+                'status' => 'failed',
+                'products' => $e->getMessage()
+            ], 401);
+        }
     }
 }
