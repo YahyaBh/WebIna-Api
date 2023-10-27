@@ -45,6 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['middleware' => ['admin']], function () {
         Route::post('/admin/dashboard', [AdminUserController::class, 'index']);
 
+        Route::post('/admin/orders', [AdminUserController::class, 'orders']);
+
+
         Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
     });
 });

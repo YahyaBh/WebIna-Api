@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AccessKeys;
+use App\Models\Order;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -26,6 +27,26 @@ class AdminUserController extends Controller
             'status' => true,
             'user_number' => $users,
         ], 200);
+    }
+
+
+    public function orders(Request $request)
+    {
+
+        if ($request->has('order_type')) {
+
+            $orders = Order::where('order_type', $request->order_type)->get();
+        } else {
+
+            $orders = Order::all();
+        }
+
+
+        return response()->json([
+            'status' => true,
+            'orders' => $orders,
+        ], 200);
+    
     }
 
     public function register(Request $request)
