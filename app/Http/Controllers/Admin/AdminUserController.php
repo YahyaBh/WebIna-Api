@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\OrderMaking;
 use App\Http\Controllers\Controller;
 use App\Models\AccessKeys;
 use App\Models\Order;
@@ -46,7 +47,21 @@ class AdminUserController extends Controller
             'status' => true,
             'orders' => $orders,
         ], 200);
-    
+    }
+
+
+    public function makeOrder(Request $request)
+    {
+
+
+        $message = 'Yahyabh';
+
+        event(new OrderMaking($message));
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Order created successfully'
+        ], 200);
     }
 
     public function register(Request $request)
@@ -154,12 +169,19 @@ class AdminUserController extends Controller
 
             $user = User::where('email', $request->email)->where('role', 'admin')->first();
 
-            return response()->json([
-                'status' => true,
-                'message' => 'User Logged In Successfully',
-                'token' => $user->createToken("access-token")->plainTextToken,
-                'admin' => $user
-            ], 200);
+            if ($user) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'User Logged In Successfully',
+                    'token' => $user->createToken("access-token")->plainTextToken,
+                    'admin' => $user
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found',
+                ], 404);
+            }
         } catch (Exception $e) {
             return response()->json([
                 'status' => false,

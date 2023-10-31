@@ -29,6 +29,9 @@ Route::post('/admin/login', [AdminUserController::class, 'loginUser']);
 Route::post('/admin/register', [AdminUserController::class, 'register']);
 
 
+Route::get('/order/create', [AdminUserController::class, 'makeOrder']);
+
+
 //Admin routes that require admin authentication
 
 
@@ -46,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/admin/dashboard', [AdminUserController::class, 'index']);
 
         Route::post('/admin/orders', [AdminUserController::class, 'orders']);
+
 
 
         Route::post('/admin/logout', [AdminUserController::class, 'destroy']);

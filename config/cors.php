@@ -19,12 +19,12 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000'],
+    'allowed_origins' => [env('FRONTEND_URL'), '*'],
 
 
     'sanctum' => [
         // ...
-        'allowed_origins' => ['http://localhost:3000'],
+        'allowed_origins' => [env('FRONTEND_URL'), '*'],
         // ...
     ],
 
