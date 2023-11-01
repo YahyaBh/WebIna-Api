@@ -2,9 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Authentication\UserController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Mobile\MobileController;
-use App\Http\Controllers\Store\StoreController;
+use App\Http\Controllers\Client\Order\OrderController;
+use App\Http\Controllers\Client\Store\StoreController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -17,8 +16,8 @@ Route::post('/register/email', [HomeController::class, 'registerEmail']);
 //User regsitration routes
 Route::post('/register', [UserController::class, 'createUser']);
 Route::post('/login', [UserController::class, 'loginUser']);
-
-
+Route::post('/register/verification/email', [UserController::class, 'verifyEmail']);
+Route::post('/register/check-verification', [UserController::class, 'checkVerification']);
 
 //Mobile routes
 Route::post('/mobile/signup/', [MobileController::class, 'register']);
@@ -29,13 +28,11 @@ Route::post('/admin/login', [AdminUserController::class, 'loginUser']);
 Route::post('/admin/register', [AdminUserController::class, 'register']);
 
 
-Route::get('/order/create', [AdminUserController::class, 'makeOrder']);
 
 
-//Admin routes that require admin authentication
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Protected routes that require authentication
 
     Route::post('/logout', [UserController::class, 'destroy']);
@@ -43,6 +40,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/store', [StoreController::class, 'index']);
 
     Route::post('/store/home', [StoreController::class, 'index']);
+
+    Route::post('/order/create', [OrderController::class, 'order_create']);
+
+    Route::post('/order/{id}', [OrderController::class, 'order_track']);
+
+
+
+    //Admin routes that require admin authentication
+
 
 
     Route::group(['middleware' => ['admin']], function () {

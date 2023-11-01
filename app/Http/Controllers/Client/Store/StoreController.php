@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Store;
+namespace App\Http\Controllers\Client\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products;
@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 
 class StoreController extends Controller
 {
-
-
-
     public function index()
     {
 

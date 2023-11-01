@@ -50,19 +50,7 @@ class AdminUserController extends Controller
     }
 
 
-    public function makeOrder(Request $request)
-    {
-
-
-        $message = 'Yahyabh';
-
-        event(new OrderMaking($message));
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Order created successfully'
-        ], 200);
-    }
+    
 
     public function register(Request $request)
     {

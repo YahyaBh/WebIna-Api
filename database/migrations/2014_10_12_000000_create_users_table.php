@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->enum('role' , ['admin', 'client' , 'support' , 'uploader'])->defaultValue('client');
+            $table->string('verification_token')->nullable();
             $table->timestamps();
         });
     }

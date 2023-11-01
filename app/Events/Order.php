@@ -10,34 +10,24 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderMaking
+class Order implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $name;
 
-    public $message;
-
-    public function __construct($message)
+    public function __construct($name)
     {
-        $this->message = $message;
+        $this->name = $name;
     }
 
     public function broadcastOn()
     {
-        return ['webina'];
+        return ['my-channel'];
     }
 
     public function broadcastAs()
     {
-        return 'order_making';
-    }
-
-    public function broadcastWith()
-    {
-        return [
-            'message' => 'New order created!',
-            'user_name' => $this->message,
-            // Include other order data if needed
-        ];
+        return 'my-event';
     }
 }
