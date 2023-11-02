@@ -29,7 +29,8 @@ class UserController extends Controller
                     'name' => ['required', 'string', 'max:255'],
                     'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
                     'password' => ['required', 'confirmed'],
-                    'password_confirmation' => 'required|min:6'
+                    'password_confirmation' => 'required|min:6',
+                    'avatar' => 'required'
                 ]
             );
 
@@ -47,9 +48,9 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'verification_token' => $this->emailToken
+                'verification_token' => $this->emailToken,
+                'avatar' => $request->avatar
             ]);
-
 
             Mail::to($request->user())->send(new MailVerifyEmailNotification($user->email, $this->emailToken, $user->id, $user->name));
 
@@ -129,22 +130,6 @@ class UserController extends Controller
     public function checkVerification(Request $request)
     {
         try {
-            $validateUser = Validator::make(
-                $request->all(),
-                [
-                    'email' => 'required|email',
-                    'passowrd' => 'required',
-                ]
-            );
-
-            if ($validateUser->fails()) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'validation error',
-                    'errors' => $validateUser->errors()
-                ], 401);
-            }
-
             $user = User::where('email', $request->email)->first();
 
 
