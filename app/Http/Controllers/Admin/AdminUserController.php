@@ -9,14 +9,21 @@ use App\Models\Order;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Mail\MailServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\VerifyEmailNotificationAdmin as MailVerifyEmailNotification;
+use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
 {
 
+
+
+    public $emailToken;
 
     public function index()
     {
@@ -50,7 +57,7 @@ class AdminUserController extends Controller
     }
 
 
-    
+
 
     public function register(Request $request)
     {
@@ -81,6 +88,8 @@ class AdminUserController extends Controller
                 if (Hash::check($request->access_key, $storedHash->access_key)) {
                     // Hash matches, set the flag to true and break the loop
                     $hashMatched = $storedHash;
+                } else {
+                    // Hash does not match, set the flag to false
                 }
             }
 
@@ -90,6 +99,10 @@ class AdminUserController extends Controller
                     $avatar = time() . '.' . $request->avatar->getClientOriginalExtension();
                     $request->avatar->move(public_path('images/admins/avatar'), $avatar);
 
+                    $this->emailToken =  Str::random(40);
+
+
+
 
                     $user = User::create([
                         'avatar' => 'images/admins/avatar/' . $avatar,
@@ -97,7 +110,7 @@ class AdminUserController extends Controller
                         'email' => $request->email,
                         'password' => Hash::make($request->password),
                         'role' => $hashMatched->role,
-                        'email_verified' => Date::now()
+                        'verification_token' => $this->emailToken,
                     ]);
                 } else {
 
@@ -112,14 +125,11 @@ class AdminUserController extends Controller
                     ]);
                 }
 
-
-                Auth::login($user);
+                Mail::to($request->user())->send(new MailVerifyEmailNotification($user->email, $this->emailToken, $user->id, $user->name));
 
                 return response()->json([
                     'status' => true,
-                    'message' => 'User Created Successfully',
-                    'token' => $user->createToken("access-token")->plainTextToken,
-                    'admin' => $user
+                    'message' => 'Please verify email before you continue',
                 ], 200);
             } else {
                 return response()->json([
@@ -131,6 +141,113 @@ class AdminUserController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function verifyEmail(Request $request)
+    {
+        try {
+            $validateUser = Validator::make(
+                $request->all(),
+                [
+                    'email' => 'required|email',
+                    'emailToken' => 'required',
+                    'id' => 'required'
+                ]
+            );
+
+            if ($validateUser->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'validation error',
+                    'errors' => $validateUser->errors()
+                ], 401);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+
+            if ($user->id == $request->id) {
+
+                if ($user->verification_token == $request->emailToken) {
+
+                    $user->update([
+                        'email_verified_at' => now(),
+                    ]);
+
+
+                    Auth::login($user);
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Administrator Verified Successfully',
+                        'token' => $user->createToken("access-token")->plainTextToken,
+                        'admin' => $user
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'User Not Verified'
+                    ], 401);
+                }
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid Email'
+                ], 401);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function checkVerification(Request $request)
+    {
+        try {
+            $user = User::where('email', $request->email)->first();
+
+
+            if ($user) {
+
+                if (Hash::check($request->password, $user->password)) {
+
+
+                    if ($user->hasVerifiedEmail()) {
+
+                        Auth::login($user);
+
+                        return response()->json([
+                            'status' => true,
+                            'message' => 'Administrator Verified Successfully',
+                            'token' => $user->createToken("access-token")->plainTextToken,
+                            'admin' => $user
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'status' => false,
+                            'message' => 'Email Is Not Verified'
+                        ], 402);
+                    }
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Email or password is incorrect'
+                    ], 401);
+                }
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found'
+                ], 401);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
             ], 500);
         }
     }

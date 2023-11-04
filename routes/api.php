@@ -16,6 +16,8 @@ Route::post('/register/email', [HomeController::class, 'registerEmail']);
 //User regsitration routes
 Route::post('/register', [UserController::class, 'createUser']);
 Route::post('/login', [UserController::class, 'loginUser']);
+
+
 Route::post('/register/verification/email', [UserController::class, 'verifyEmail']);
 Route::post('/register/check-verification', [UserController::class, 'checkVerification']);
 
@@ -27,6 +29,8 @@ Route::post('/mobile/signup/', [MobileController::class, 'register']);
 Route::post('/admin/login', [AdminUserController::class, 'loginUser']);
 Route::post('/admin/register', [AdminUserController::class, 'register']);
 
+Route::post('/admin/register/verification/email', [AdminUserController::class, 'verifyEmail']);
+Route::post('/admin/register/check-verification', [AdminUserController::class, 'checkVerification']);
 
 
 
