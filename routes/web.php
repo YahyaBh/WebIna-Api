@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    return Redirect::to('https://webinadigital.com');;
+    return view('home/index');
 });
 
 

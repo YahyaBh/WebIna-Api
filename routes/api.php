@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\Client\Order\OrderController;
 use App\Http\Controllers\Client\Store\StoreController;
+use App\Http\Controllers\Client\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
 //Home page routes 
 Route::get('/home', [HomeController::class, 'home_ret']);
+Route::post('/news', [HomeController::class, 'news']);
 Route::post('/contact', [HomeController::class, 'contactSend']);
 Route::post('/register/email', [HomeController::class, 'registerEmail']);
 
@@ -20,6 +22,7 @@ Route::post('/login', [UserController::class, 'loginUser']);
 
 Route::post('/register/verification/email', [UserController::class, 'verifyEmail']);
 Route::post('/register/check-verification', [UserController::class, 'checkVerification']);
+
 
 //Mobile routes
 Route::post('/mobile/signup/', [MobileController::class, 'register']);
@@ -45,7 +48,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/store/home', [StoreController::class, 'index']);
 
-    Route::post('/order/create', [OrderController::class, 'order_create']);
+    Route::get('/order/create', [OrderController::class, 'order_create']);
 
     Route::post('/order/{id}', [OrderController::class, 'order_track']);
 

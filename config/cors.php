@@ -19,13 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL'), '*'],
+    'allowed_origins' => ['*'],
 
 
     'sanctum' => [
-        // ...
-        'allowed_origins' => [env('FRONTEND_URL'), '*'],
-        // ...
+        'allowed_origins' => ['*'],
     ],
 
     'allowed_headers' => ['*'],
