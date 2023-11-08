@@ -15,13 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('image');
             $table->string('name');
-            $table->string('description');
-            $table->string('owner');
-            $table->string('technologies');
-            $table->string('categories');
+            $table->string('description')->nullable();
+            $table->string('owner')->nullable();
+            $table->string('technologies')->nullable();
+            $table->string('category');
             $table->string('url')->nullable();
-            $table->enum('status' , ['finished' , 'progress'],);
-            $table->string('date');
+            $table->enum('status' , ['finished' , 'progress'])->nullable();
+            $table->string('date')->nullable();
             $table->timestamps();
         });
     }

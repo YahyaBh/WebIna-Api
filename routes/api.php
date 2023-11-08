@@ -66,5 +66,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
 
+        Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
+
+
     });
 });

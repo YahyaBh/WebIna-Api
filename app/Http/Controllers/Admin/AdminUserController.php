@@ -356,4 +356,44 @@ class AdminUserController extends Controller
             ], 500);
         }
     }
+
+
+    public function projectHome(Request $request)
+    {
+
+        $request->validate([
+            'title' => 'required',
+            'image' => 'required|image',
+            'category' => 'required'
+        ]);
+
+        try {
+
+            $home = Home::first();
+
+
+            if ($request->has('image')) {
+
+                $image = time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('images/admins/home/projects/images'), $image);
+            }
+
+
+            $home->update([
+                'title' =>  $request->name,
+                'image' => env('APP_URL') . $image,
+                'category' => $request->category
+            ]);
+
+
+            return response()->json([
+                'message' => 'Project added successfully'
+            ], 200);
+            
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
