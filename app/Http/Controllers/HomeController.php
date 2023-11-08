@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\blogs;
 use App\Models\Contact;
 use App\Models\emails;
+use App\Models\Home;
 use App\Models\projects;
 use App\Models\testimonials;
 use Illuminate\Http\Request;
@@ -19,27 +20,24 @@ class HomeController extends Controller
         $testimonials = testimonials::take(6)->get();
         $projects = projects::take(3)->get();
         $blogs = blogs::take(4)->get();
-
-
-        return response()->json([
-            'testimonials' => $testimonials,
-            'blogs' => $blogs,
-            'projects' => $projects
-        ], 200);
-    }
-
-    public function news()
-    {
-        $response = Http::get('https://newsapi.org/v2/top-headlines', [
+        $home = Home::first()->get();
+        $news = Http::get('https://newsapi.org/v2/top-headlines', [
             'q' => 'Digital Business',
             'from' => '2020-11-06',
             'sortBy' => 'popularity',
             'apiKey' => '47097957bd3c4199a0305bedf11b4d6b',
         ]);
 
-        return $response->json();
-    }
 
+        return response()->json([
+            'testimonials' => $testimonials,
+            'blogs' => $blogs,
+            'projects' => $projects,
+            'targetDate' => $home->targetDate,
+            'videoShort' => $home->imageGif,
+            'news' => $news,
+        ], 200);
+    }
 
     public function registerEmail(Request $request)
     {

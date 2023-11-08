@@ -4,13 +4,12 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\Client\Order\OrderController;
 use App\Http\Controllers\Client\Store\StoreController;
-use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 
 //Home page routes 
 Route::get('/home', [HomeController::class, 'home_ret']);
-Route::post('/news', [HomeController::class, 'news']);
 Route::post('/contact', [HomeController::class, 'contactSend']);
 Route::post('/register/email', [HomeController::class, 'registerEmail']);
 
@@ -63,8 +62,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::post('/admin/orders', [AdminUserController::class, 'orders']);
 
-
-
         Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
+
+        Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
+
     });
 });

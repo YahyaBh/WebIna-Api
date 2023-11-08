@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\VerifyEmailNotificationAdmin as MailVerifyEmailNotification;
+use App\Models\Home;
 use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
@@ -309,6 +310,50 @@ class AdminUserController extends Controller
                 'status' => false,
                 'status' => 'Something went wrong , please re-login to your account'
             ], 401);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public function editHome(Request $request)
+    {
+
+        try {
+
+            if ($request->date || $request->videoShort) {
+
+                $home = Home::first();
+
+
+                if ($request->has('videoShort')) {
+
+                    $video = time() . '.' . $request->videoShort->getClientOriginalExtension();
+                    $request->videoShort->move(public_path('images/admins/home/edit/video'), $video);
+                }
+
+
+                $home->update([
+                    'targetDate' => env('APP_URL') . $request->date,
+                    'imageGif' => $video
+                ]);
+
+
+                return response()->json([
+                    'message' => 'Home page updated successfully'
+                ], 200);
+            }
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }
