@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'WEBINA'),
+    'name' => env('APP_NAME', 'WEBINA DIGITAL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -57,7 +57,7 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+    'frontend_url' => env('FRONTEND_URL', '*'),
 
     'asset_url' => env('ASSET_URL'),
 
@@ -124,7 +124,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+    'key' => env('APP_KEY' , base64_decode('gE3eJyfVuR4/T+hm9XagIWRzpZepDA4gmS4gneuItuo=')),
 
     'cipher' => 'AES-256-CBC',
 

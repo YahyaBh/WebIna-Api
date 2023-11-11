@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\OrderMaking;
 use App\Http\Controllers\Controller;
 use App\Models\AccessKeys;
 use App\Models\Order;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Mail\MailServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +15,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\VerifyEmailNotificationAdmin as MailVerifyEmailNotification;
 use App\Models\Home;
+use App\Models\projects;
+use App\Models\testimonials;
 use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
@@ -328,22 +328,28 @@ class AdminUserController extends Controller
 
         try {
 
-            if ($request->date || $request->videoShort) {
+            if ($request->date && $request->image) {
 
                 $home = Home::first();
 
 
-                if ($request->has('videoShort')) {
+                if ($request->has('image')) {
 
-                    $video = time() . '.' . $request->videoShort->getClientOriginalExtension();
-                    $request->videoShort->move(public_path('images/admins/home/edit/video'), $video);
+                    $imageGif = time() . '.' . $request->image->getClientOriginalExtension();
+                    $request->image->move(public_path('images/admins/home/edit/video'), $imageGif);
                 }
 
-
-                $home->update([
-                    'targetDate' => env('APP_URL') . $request->date,
-                    'imageGif' => $video
-                ]);
+                if ($home) {
+                    $home->update([
+                        'targetDate' => $request->date,
+                        'imageGif' => env('APP_URL') . '/images/admins/home/edit/video/' . $imageGif
+                    ]);
+                } else {
+                    Home::create([
+                        'targetDate' => $request->date,
+                        'imageGif' => env('APP_URL') . '/images/admins/home/edit/video/' . $imageGif
+                    ]);
+                }
 
 
                 return response()->json([
@@ -362,15 +368,12 @@ class AdminUserController extends Controller
     {
 
         $request->validate([
-            'title' => 'required',
+            'name' => 'required',
             'image' => 'required|image',
             'category' => 'required'
         ]);
 
         try {
-
-            $home = Home::first();
-
 
             if ($request->has('image')) {
 
@@ -379,9 +382,9 @@ class AdminUserController extends Controller
             }
 
 
-            $home->update([
-                'title' =>  $request->name,
-                'image' => env('APP_URL') . $image,
+            projects::create([
+                'name' =>  $request->name,
+                'image' => env('APP_URL') . '/images/admins/home/projects/images/' . $image,
                 'category' => $request->category
             ]);
 
@@ -389,7 +392,44 @@ class AdminUserController extends Controller
             return response()->json([
                 'message' => 'Project added successfully'
             ], 200);
-            
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function testimonialsHome(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'image' => 'required|image',
+            'description' => 'required',
+            'rating' => 'required'
+        ]);
+
+        try {
+
+            if ($request->has('image')) {
+
+                $image = time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('images/admins/home/testimonials/images'), $image);
+            }
+
+
+            testimonials::create([
+                'name' =>  $request->name,
+                'image' => env('APP_URL') . '/images/admins/home/testimonials/images/' . $image,
+                'description' => $request->description,
+                'rating' => $request->rating
+            ]);
+
+
+            return response()->json([
+                'message' => 'Testimonial added successfully'
+            ], 200);
+
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()

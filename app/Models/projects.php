@@ -11,5 +11,5 @@ class projects extends Model
 
 
 
-    protected $fillable = ['image', 'name', 'description', 'owner','categories', 'technologies', 'status', 'date'];
+    protected $fillable = ['image', 'name', 'description', 'owner','category', 'technologies', 'status', 'date'];
 }

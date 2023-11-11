@@ -11,5 +11,5 @@ class Home extends Model
 
 
 
-    protected $fillable = ['targetDate' , 'ImageGif'];
+    protected $fillable = ['targetDate' , 'imageGif'];
 }

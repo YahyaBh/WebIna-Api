@@ -17,10 +17,10 @@ class HomeController extends Controller
 
     public function home_ret()
     {
-        $testimonials = testimonials::take(6)->get();
-        $projects = projects::take(3)->get();
-        $blogs = blogs::take(4)->get();
-        $home = Home::first()->get();
+        $testimonials = testimonials::all();
+        $projects = projects::all();
+        $blogs = blogs::all();
+        $home = Home::all();
         $news = Http::get('https://newsapi.org/v2/top-headlines', [
             'q' => 'Digital Business',
             'from' => '2020-11-06',
@@ -33,8 +33,7 @@ class HomeController extends Controller
             'testimonials' => $testimonials,
             'blogs' => $blogs,
             'projects' => $projects,
-            'targetDate' => $home->targetDate,
-            'videoShort' => $home->imageGif,
+            'homeData' => $home,
             'news' => $news,
         ], 200);
     }
