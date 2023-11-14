@@ -19,14 +19,8 @@ class HomeController extends Controller
     {
         $testimonials = testimonials::all();
         $projects = projects::all();
-        $blogs = blogs::all();
+        $blogs = blogs::get()->take(4);
         $home = Home::all();
-        $news = Http::get('https://newsapi.org/v2/top-headlines', [
-            'q' => 'Digital Business',
-            'from' => '2020-11-06',
-            'sortBy' => 'popularity',
-            'apiKey' => '47097957bd3c4199a0305bedf11b4d6b',
-        ]);
 
 
         return response()->json([
@@ -34,7 +28,7 @@ class HomeController extends Controller
             'blogs' => $blogs,
             'projects' => $projects,
             'homeData' => $home,
-            'news' => $news,
+            'blogs' => $blogs,
         ], 200);
     }
 
