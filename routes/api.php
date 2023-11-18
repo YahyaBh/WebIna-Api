@@ -23,6 +23,15 @@ Route::post('/register/verification/email', [UserController::class, 'verifyEmail
 Route::post('/register/check-verification', [UserController::class, 'checkVerification']);
 
 
+//User Store routes
+
+
+Route::post('/store', [StoreController::class, 'index']);
+// Route::post('/store/home', [StoreController::class, 'index']);
+Route::post('/store/product', [StoreController::class, 'product']);
+
+
+
 //Mobile routes
 Route::post('/mobile/signup/', [MobileController::class, 'register']);
 
@@ -37,19 +46,10 @@ Route::post('/admin/register/check-verification', [AdminUserController::class, '
 
 
 
-
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Protected routes that require authentication
 
     Route::post('/logout', [UserController::class, 'destroy']);
-
-    Route::post('/store', [StoreController::class, 'index']);
-
-    Route::post('/store/home', [StoreController::class, 'index']);
-
-    Route::get('/order/create', [OrderController::class, 'order_create']);
-
-    Route::post('/order/{id}', [OrderController::class, 'order_track']);
 
 
 

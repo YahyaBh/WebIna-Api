@@ -30,4 +30,34 @@ class StoreController extends Controller
             ], 401);
         }
     }
+
+
+    public function product(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'product_token' => 'required',
+            ]);
+
+
+            $product = Products::where('token', $request->product_token)->first();
+
+            $product->update([
+                'views' => $product->views + 1
+            ]);
+
+
+            return response()->json([
+                'status' => 'success',
+                'product' => $product
+            ], 200);
+        } catch (Exception $e) {
+
+            return response()->json([
+                'status' => 'failed',
+                'product' => $e->getMessage()
+            ], 401);
+        }
+    }
 }
