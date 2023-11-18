@@ -29,10 +29,9 @@ class BlogsHandler extends Command
     {
         $response = Http::get('http://api.mediastack.com/v1/news?access_key=eddbad880a36d275292da0d9185ef3b6&keywords=Digital Business');
 
-        $this->info($response); // Output information
 
         // Assuming the API response has a key named 'data' containing an array of news items.
-        $newsItems = $apiResult['data'] ?? [];
+        $newsItems = $response['data'] ?? [];
 
         // Save 10 news items to the database.
         $newsToSave = array_slice($newsItems, 0, 10);
@@ -46,7 +45,7 @@ class BlogsHandler extends Command
             ]);
         }
 
-        $this->info('http:blogs command executed successfully.'); // Output information
+        $this->info('command executed successfully.'); // Output information
 
         return 0; // Return an integer exit code.
     }
