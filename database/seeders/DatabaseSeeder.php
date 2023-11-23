@@ -12,11 +12,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        \App\Models\AccessKeys::create([
+            'access_key' => '$2a$12$A9KPTxrpodVL88bmqLHwme8.9/LlgtHWKT.xdFYKrpD9QYatyAcse',
+            'role' => 'admin',
+        ]);
     }
 }

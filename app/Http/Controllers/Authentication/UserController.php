@@ -48,7 +48,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'verification_token' => $this->emailToken,
-                'avatar' => $request->avatar
+                'avatar' => env('APP_URL') . '/Images/users/avatar/' . $request->avatar
             ]);
 
             Mail::to($request->user())->send(new MailVerifyEmailNotification($user->email, $this->emailToken, $user->id, $user->name));

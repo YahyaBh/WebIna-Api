@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Authentication\UserController;
-use App\Http\Controllers\Client\Order\OrderController;
 use App\Http\Controllers\Client\Store\StoreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SocialAuthController;

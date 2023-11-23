@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Products;
+use App\Models\projects;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -15,15 +16,17 @@ class StoreController extends Controller
         try {
 
             $products = Products::all();
+            $hot_products = Products::all()->take(6);
+            $porjects = projects::all()->take(6);
 
             return response()->json([
                 'status' => 'success',
                 'products' => $products,
+                'hot_products' => $hot_products,
+                'porjects' => $porjects,
             ], 200);
+            
         } catch (Exception $e) {
-
-            $products = Products::all();
-
             return response()->json([
                 'status' => 'failed',
                 'products' => $e->getMessage()
