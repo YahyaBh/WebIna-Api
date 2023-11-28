@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('status');
             $table->integer('price');
             $table->integer('old_price')->nullable();
-            $table->string('description');
+            $table->text('description');
             $table->string('tags');
             $table->string('category');
             $table->string('publisher');

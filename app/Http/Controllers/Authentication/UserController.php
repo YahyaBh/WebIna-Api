@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -48,7 +49,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'verification_token' => $this->emailToken,
-                'avatar' => env('APP_URL') . '/Images/users/avatar/' . $request->avatar
+                'avatar' => env('APP_URL') . '/images/users/avatar/' . $request->avatar . '.png'
             ]);
 
             Mail::to($request->user())->send(new MailVerifyEmailNotification($user->email, $this->emailToken, $user->id, $user->name));
@@ -230,6 +231,38 @@ class UserController extends Controller
                 'status' => false,
                 'message' => $e->getMessage()
             ], 500);
+        }
+    }
+
+
+    public function forgetPassword(Request $request)
+    {
+
+        $request->validate([
+            'email' => 'required|email'
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $status = Password::sendResetLink(
+                $request->only('email')
+            );
+
+
+            $status === Password::RESET_LINK_SENT
+                ? back()->with(['status' => __($status)])
+                : back()->withErrors(['email' => __($status)]);
+
+            return response()->json([
+                'status' => true,
+                'message' => $status
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'No user found'
+            ], 401);
         }
     }
 

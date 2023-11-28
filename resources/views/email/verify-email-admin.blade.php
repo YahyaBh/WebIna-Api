@@ -49,14 +49,14 @@
         .button {
             display: inline-block;
             padding: 12px 24px;
-            background-color: #4caf50;
+            background-color: #ffe662;
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
         }
 
         .button:hover {
-            background-color: #45a049;
+            background-color: #d8ba21;
         }
 
         .footer {
@@ -104,7 +104,7 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <img src="https://i.ibb.co/q7C6swX/WEBINA-OG.png" alt="Webina Digital Logo">
+            <img src="https://i.ibb.co/vLt7StG/WEBINA2.png" alt="Webina Digital Logo">
         </div>
         <div class="content">
             <h1>Verify Your Email Address</h1>

@@ -15,8 +15,10 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use App\Mail\VerifyEmailNotificationAdmin as MailVerifyEmailNotification;
 use App\Models\Home;
+use App\Models\Products;
 use App\Models\projects;
 use App\Models\testimonials;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 
 class AdminUserController extends Controller
@@ -429,7 +431,103 @@ class AdminUserController extends Controller
             return response()->json([
                 'message' => 'Testimonial added successfully'
             ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
+
+    public function createProduct(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required|unique:products',
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'status' => 'required',
+            'image' => 'required|image',
+            'image2' => 'required|image',
+            'category' => 'required',
+            'tags' => 'required',
+            'publisher' => 'required',
+            'status' => 'required'
+        ]);
+
+
+
+        try {
+
+            if ($request->has('image')) {
+
+                $image1 = time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path('images/store/products'), $image1);
+
+                $image2 = time() . '.' . $request->image2->getClientOriginalExtension();
+                $request->image2->move(public_path('images/store/products/'),  '2' . $image2);
+
+                if ($request->has('image3')) {
+
+                    $image3 = time() . '.' . $request->image3->getClientOriginalExtension();
+                    $request->image3->move(public_path('images/store/products/3'),  '3' .  $image3);
+
+                    if ($request->has('image4')) {
+
+                        $image4 = time() . '.' . $request->image4->getClientOriginalExtension();
+                        $request->image4->move(public_path('images/store/products/4'),  '4' .  $image4);
+
+                        if ($request->has('image5')) {
+
+                            $image5 = time() . '.' . $request->image5->getClientOriginalExtension();
+                            $request->image5->move(public_path('images/store/products/5'), '5' .  $image5);
+
+                            if ($request->has('image6')) {
+
+                                $image6 = time() . '.' . $request->image6->getClientOriginalExtension();
+                                $request->image6->move(public_path('images/store/products/6'), '6' .  $image6);
+
+                                if ($request->has('image7')) {
+
+                                    $image7 = time() . '.' . $request->image7->getClientOriginalExtension();
+                                    $request->image7->move(public_path('images/store/products/7'), '7' . $image7);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            Products::create([
+                'token' => $request->token,
+                'name' =>  $request->name,
+                'description' => $request->description,
+                'price' => $request->price,
+                'old_price' => $request->old_price,
+                'available' => $request->available,
+                'image1' => env('APP_URL') . '/images/store/products/' . $image1,
+                'image2' => env('APP_URL') . '/images/store/products/' . '2' . $image2,
+                'image3' => $request->has('image3') ?? env('APP_URL') . '/images/store/products/' . '3' . $image3,
+                'image4' => $request->has('image4') ?? env('APP_URL') . '/images/store/products/' . '4' . $image4,
+                'image5' => $request->has('image5') ?? env('APP_URL') . '/images/store/products/' . '5'  . $image5,
+                'image6' => $request->has('image6') ?? env('APP_URL') . '/images/store/products/' . '6' . $image6,
+                'image7' => $request->has('image7') ?? env('APP_URL') . '/images/store/products/' . '7'  . $image7,
+                'rating' => $request->rating ?? 0,
+                'purchases' => $request->purchases ?? 0,
+                'views' => $request->views ?? 0,
+                'downloads' => $request->downloads ?? 0,
+                'status' => $request->status === 'true' ? 'Available' : 'Not Available',
+                'category' => $request->category,
+                'tags' => $request->tags,
+                'publisher' => $request->publisher,
+                'last_updated' => Carbon::now()
+            ]);
+
+            return response()->json([
+                'message' => 'Product created successfully'
+            ], 200);
         } catch (Exception $e) {
             return response()->json([
                 'message' => $e->getMessage()

@@ -17,6 +17,7 @@ Route::post('/register/email', [HomeController::class, 'registerEmail']);
 //User regsitration routes
 Route::post('/register', [UserController::class, 'createUser']);
 Route::post('/login', [UserController::class, 'loginUser']);
+Route::post('/forget-password' , [UserController::class , 'forgetPassword']);
 
 
 Route::post('/auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
@@ -35,7 +36,6 @@ Route::post('/register/check-verification', [UserController::class, 'checkVerifi
 
 
 Route::post('/store', [StoreController::class, 'index']);
-// Route::post('/store/home', [StoreController::class, 'index']);
 Route::post('/store/product', [StoreController::class, 'product']);
 
 
@@ -59,6 +59,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/logout', [UserController::class, 'destroy']);
 
+    Route::post('/cart' , [UserController::class, 'cartIndex']);
 
 
     //Admin routes that require admin authentication
@@ -77,5 +78,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
 
         Route::post('/admin/home/testemonials', [AdminUserController::class, 'testimonialsHome']);
+
+        Route::post('/admin/product/create', [AdminUserController::class, 'createProduct']);
     });
 });
