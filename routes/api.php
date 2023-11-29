@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Authentication\UserController;
+use App\Http\Controllers\Client\Store\Cart;
 use App\Http\Controllers\Client\Store\StoreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SocialAuthController;
@@ -51,6 +52,7 @@ Route::post('/admin/register', [AdminUserController::class, 'register']);
 Route::post('/admin/register/verification/email', [AdminUserController::class, 'verifyEmail']);
 Route::post('/admin/register/check-verification', [AdminUserController::class, 'checkVerification']);
 
+Route::post('/cart/add' , [Cart::class, 'add_to_cart']);
 
 
 
@@ -59,7 +61,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/logout', [UserController::class, 'destroy']);
 
-    Route::post('/cart' , [UserController::class, 'cartIndex']);
 
 
     //Admin routes that require admin authentication
