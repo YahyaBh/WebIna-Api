@@ -52,7 +52,6 @@ Route::post('/admin/register', [AdminUserController::class, 'register']);
 Route::post('/admin/register/verification/email', [AdminUserController::class, 'verifyEmail']);
 Route::post('/admin/register/check-verification', [AdminUserController::class, 'checkVerification']);
 
-Route::post('/cart/add' , [Cart::class, 'add_to_cart']);
 
 
 
@@ -61,6 +60,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/logout', [UserController::class, 'destroy']);
 
+    Route::post('/cart/add/product' , [Cart::class, 'add_to_cart']);
+    Route::post('/cart/product' , [Cart::class, 'get_cart_product']);
+    Route::post('/cart/remove/product' , [Cart::class, 'remove_from_cart']);
 
 
     //Admin routes that require admin authentication
