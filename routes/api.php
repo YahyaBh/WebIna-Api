@@ -60,9 +60,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/logout', [UserController::class, 'destroy']);
 
+    Route::get('/cart' , [Cart::class, 'index']);
     Route::post('/cart/add/product' , [Cart::class, 'add_to_cart']);
     Route::post('/cart/product' , [Cart::class, 'get_cart_product']);
     Route::post('/cart/remove/product' , [Cart::class, 'remove_from_cart']);
+
+    Route::post('/cart/discount/check' , [Cart::class, 'discount_check']);
 
 
     //Admin routes that require admin authentication

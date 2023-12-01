@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_carts', function (Blueprint $table) {
+        Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->string('product_token');
-            $table->string('discount');
+            $table->string('discount_code');
+            $table->enum('expired' , ['true', 'false'])->default('false');
+            $table->string('publisher')->default('WEBINA DIGITAL');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_carts');
+        Schema::dropIfExists('discounts');
     }
 };
