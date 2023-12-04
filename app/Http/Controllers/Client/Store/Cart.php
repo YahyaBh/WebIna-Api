@@ -15,12 +15,10 @@ class Cart extends Controller
 
 
 
-    public function index(Request $request)
+    public function index()
     {
 
-
         try {
-
 
             $user = Auth::user();
 
@@ -60,11 +58,13 @@ class Cart extends Controller
 
             $request->validate([
                 'product_token' => 'required',
-                'user_id' => 'required',
+
             ]);
 
+            $user = Auth::user();
 
-            $product = UserCart::where('user_id', $request->user_id)->where('product_token', $request->product_token)->first();
+
+            $product = UserCart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
 
             if (!$product) {
                 return response()->json([
@@ -128,23 +128,29 @@ class Cart extends Controller
 
             $request->validate([
                 'product_token' => 'required',
-                'user_id' => 'required',
             ]);
 
 
+            $user = Auth::user();
 
-            UserCart::create([
-                'user_id' => $request->user_id,
-                'product_token' => $request->product_token
-            ]);
+            $product = UserCart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Product added to cart',
-            ], 200);
+            if ($product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product already in cart',
+                ], 404);
+            } else {
+                UserCart::create([
+                    'user_id' => $user->id,
+                    'product_token' => $request->product_token
+                ]);
 
-            // }
-
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Product added to cart',
+                ], 200);
+            }
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,

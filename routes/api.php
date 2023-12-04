@@ -5,6 +5,7 @@ use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\Client\Store\Cart;
 use App\Http\Controllers\Client\Store\StoreController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\SocialAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,7 @@ Route::post('/register/email', [HomeController::class, 'registerEmail']);
 //User regsitration routes
 Route::post('/register', [UserController::class, 'createUser']);
 Route::post('/login', [UserController::class, 'loginUser']);
-Route::post('/forget-password' , [UserController::class , 'forgetPassword']);
+Route::post('/forget-password', [UserController::class, 'forgetPassword']);
 
 
 Route::post('/auth/{provider}', [SocialAuthController::class, 'redirectToProvider']);
@@ -60,12 +61,18 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/logout', [UserController::class, 'destroy']);
 
-    Route::get('/cart' , [Cart::class, 'index']);
-    Route::post('/cart/add/product' , [Cart::class, 'add_to_cart']);
-    Route::post('/cart/product' , [Cart::class, 'get_cart_product']);
-    Route::post('/cart/remove/product' , [Cart::class, 'remove_from_cart']);
+    Route::get('/cart', [Cart::class, 'index']);
+    Route::post('/cart/add/product', [Cart::class, 'add_to_cart']);
+    Route::post('/cart/product', [Cart::class, 'get_cart_product']);
+    Route::post('/cart/remove/product', [Cart::class, 'remove_from_cart']);
 
-    Route::post('/cart/discount/check' , [Cart::class, 'discount_check']);
+    Route::post('/cart/discount/check', [Cart::class, 'discount_check']);
+
+
+    Route::get('create-transaction', [PayPalController::class, 'createTransaction'])->name('createTransaction');
+    Route::get('process-transaction', [PayPalController::class, 'processTransaction'])->name('processTransaction');
+    Route::get('success-transaction', [PayPalController::class, 'successTransaction'])->name('successTransaction');
+    Route::get('cancel-transaction', [PayPalController::class, 'cancelTransaction'])->name('cancelTransaction');
 
 
     //Admin routes that require admin authentication

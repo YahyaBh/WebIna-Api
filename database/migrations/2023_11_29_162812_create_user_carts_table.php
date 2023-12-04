@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('product_token');
-            $table->string('discount');
+            $table->string('discount')->nullable();
             $table->timestamps();
         });
     }

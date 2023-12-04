@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Discount extends Model
 {
     use HasFactory;
+
+
+    protected $fillable = ['discount_code', 'expired', 'publisher'];
 }
