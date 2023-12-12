@@ -43,7 +43,7 @@ Route::post('/store/product', [StoreController::class, 'product']);
 
 
 //Mobile routes
-Route::post('/mobile/signup/', [MobileController::class, 'register']);
+// Route::post('/mobile/signup/', [MobileController::class, 'register']);
 
 
 //Admin registration routes
@@ -60,6 +60,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Protected routes that require authentication
 
     Route::post('/logout', [UserController::class, 'destroy']);
+    Route::post('/user', [UserController::class, 'index']);
+    Route::post('/user/update', [UserController::class, 'update']);
 
     Route::get('/cart', [Cart::class, 'index']);
     Route::post('/cart/add/product', [Cart::class, 'add_to_cart']);

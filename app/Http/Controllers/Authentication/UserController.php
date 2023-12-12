@@ -19,6 +19,35 @@ class UserController extends Controller
 
     public $emailToken;
 
+
+    public function index()
+    {
+        $user = User::where('id', Auth::user()->id)->first();
+
+        return response()->json([
+            'status' => true,
+            'user' => $user
+
+        ], 200);
+    }
+
+
+    public function update(Request $request)
+    {
+
+
+        $user = User::where('id', Auth::user()->id)->first();
+
+
+        if ($request->has('name')) {
+            $user->name = $request->name;
+        }
+
+        if ($request->has('phone')) {
+            $user->phone = $request->phone;
+        }
+    }
+
     public function createUser(Request $request)
     {
         try {
