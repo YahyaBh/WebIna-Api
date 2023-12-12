@@ -50,7 +50,7 @@ class SocialAuthController extends Controller
                     'name' => $socialiteUser->getName(),
                     'google_id' => $socialiteUser->getId(),
                     'avatar' => $socialiteUser->getAvatar(),
-                    'role' => 'client'
+                    'role' => 'client',
                 ]
             );
 

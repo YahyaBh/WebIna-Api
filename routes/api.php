@@ -62,6 +62,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/logout', [UserController::class, 'destroy']);
     Route::post('/user', [UserController::class, 'index']);
     Route::post('/user/update', [UserController::class, 'update']);
+    Route::post('/user/password/update', [UserController::class, 'passwordUpdate']);
+
+    Route::post('/user/{status}', [StoreController::class, 'userProducts']);
+    Route::post('/user/cards', [StoreController::class, 'cardsIndex']);
+
+
 
     Route::get('/cart', [Cart::class, 'index']);
     Route::post('/cart/add/product', [Cart::class, 'add_to_cart']);

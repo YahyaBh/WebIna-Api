@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('product_token');
             $table->string('discount')->nullable();
+            $table->enum('status', ['purchased', 'incart' , 'wishlist'])->default('incart');
             $table->timestamps();
         });
     }

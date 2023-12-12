@@ -46,6 +46,53 @@ class UserController extends Controller
         if ($request->has('phone')) {
             $user->phone = $request->phone;
         }
+
+        if ($request->has('avatar')) {
+
+
+            $avatar = time() . '.' . $request->avatar->getClientOriginalExtension();
+            $request->avatar->move(public_path('images/users/avatar'), $avatar);
+
+            $user->avatar = env('APP_URL') . '/images/users/avatar/' . $avatar;
+        }
+
+
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'user updated successfully',
+        ], 200);
+    }
+
+    public function passwordUpdate(Request $request)
+    {
+
+
+        $request->validate([
+            'oldPass' => 'required',
+            'newPass' => 'required',
+        ]);
+
+
+        if (Hash::check($request->oldPass, Auth::user()->password)) {
+            $user = User::where('id', Auth::user()->id)->first();
+
+            $user->password = Hash::make($request->newPass);
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'password updated successfully',
+            ], 200);
+
+            
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Old password does not match'
+            ], 401);
+        }
     }
 
     public function createUser(Request $request)
@@ -78,6 +125,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'verification_token' => $this->emailToken,
+                'role' => 'client',
                 'avatar' => env('APP_URL') . '/images/users/avatar/' . $request->avatar . '.png'
             ]);
 
