@@ -11,5 +11,5 @@ class UserCart extends Model
 
 
 
-    protected $fillable = ['user_id', 'product_token'];
+    protected $fillable = ['user_id', 'product_token' , 'discount' , 'status'];
 }

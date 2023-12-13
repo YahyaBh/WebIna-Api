@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
             $table->string('discount_code');
+            $table->integer('discount_percentage');
             $table->enum('expired' , ['true', 'false'])->default('false');
             $table->string('publisher')->default('WEBINA DIGITAL');
             $table->timestamps();

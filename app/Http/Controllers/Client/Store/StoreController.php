@@ -43,7 +43,7 @@ class StoreController extends Controller
 
         try {
 
-            $cart = UserCart::where('user_id', Auth::user()->id, 'status', $status)->get();
+            $cart = UserCart::where('user_id', Auth::user()->id)->where('status', $status)->get();
 
 
 
@@ -61,6 +61,7 @@ class StoreController extends Controller
                 'status' => 'success',
                 'products' => $products
             ], 200);
+            
         } catch (Exception $e) {
 
             return response()->json([
@@ -72,7 +73,8 @@ class StoreController extends Controller
 
 
 
-    public function cardsIndex() {
+    public function cardsIndex()
+    {
 
 
         try {
@@ -84,7 +86,6 @@ class StoreController extends Controller
                 'status' => 'success',
                 'cards' => $cards
             ], 200);
-
         } catch (Exception $e) {
 
             return response()->json([
@@ -92,7 +93,6 @@ class StoreController extends Controller
                 'message' => $e->getMessage()
             ], 401);
         }
-
     }
 
 
