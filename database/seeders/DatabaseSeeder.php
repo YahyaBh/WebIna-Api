@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
             'token' => '8e478edf-9c55-4ef9-ae46-f91ddd5d285f',
             'image1' => 'http://localhost:8000/images/store/products/1701178905.jpg',
             'image2' => 'http://localhost:8000/images/store/products/1701178905.jpg',
-            'name' => 'WEbina Digital Swral',
+            'name' => 'WEbina Digital Application',
             'rating' => 5,
             'views' => 152,
             'purchases' => 20,
@@ -36,6 +36,8 @@ class DatabaseSeeder extends Seeder
             'description' => 'vMaintenance: Proper care is essential to maintain the quality and appearance of jeans. Washing and drying instructions may vary depend',
             'tags' => 'Clothing, Jeans, Trousers',
             'publisher' => 'WEBINA DIGITAL',
+            'link' => 'https://applicationtest.com/',
+            'pdf' => '8e478edf-9c55-4ef9-ae46-f91ddd5d285f',
             'last_updated' => Carbon::now()
         ]);
 

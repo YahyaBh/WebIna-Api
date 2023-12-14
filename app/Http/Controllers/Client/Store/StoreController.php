@@ -10,6 +10,7 @@ use App\Models\UserCart;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class StoreController extends Controller
 {
@@ -37,6 +38,29 @@ class StoreController extends Controller
     }
 
 
+    public function downloadPdf($token)
+    {
+
+        $product = Products::where('token', $token)->first();
+
+        if ($product) {
+
+            $file = public_path() . "/store/products/pdf/" . $product->pdf . '.pdf';
+
+            $headers = array(
+                'Content-Type: application/pdf',
+            );
+
+            return response()->download($file);
+        } else {
+
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Product not found'
+            ], 401);
+        }
+    }
+
 
     public function userProducts($status)
     {
@@ -61,7 +85,6 @@ class StoreController extends Controller
                 'status' => 'success',
                 'products' => $products
             ], 200);
-            
         } catch (Exception $e) {
 
             return response()->json([

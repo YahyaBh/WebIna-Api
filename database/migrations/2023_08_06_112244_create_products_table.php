@@ -34,6 +34,8 @@ return new class extends Migration
             $table->string('category');
             $table->string('publisher');
             $table->string('last_updated');
+            $table->string('link')->nullable();
+            $table->string('pdf')->nullable();
             $table->timestamps();
         });
     }

@@ -41,6 +41,10 @@ Route::post('/store', [StoreController::class, 'index']);
 Route::post('/store/product', [StoreController::class, 'product']);
 
 
+Route::get('/store/product/download/{pdf}', [StoreController::class, 'downloadPdf']);
+
+
+
 
 //Mobile routes
 // Route::post('/mobile/signup/', [MobileController::class, 'register']);
@@ -76,8 +80,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::post('/cart/discount/check', [Cart::class, 'discount_check']);
 
-
-    Route::post('/order/create/paypal' , [PayPalController::class, 'createOrder']);
+    Route::post('/order/create/paypal', [PayPalController::class, 'createOrder']);
 
     //Admin routes that require admin authentication
 
