@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Client\Store;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Products;
 use App\Models\projects;
+use App\Models\UserCard;
 use App\Models\UserCards;
 use App\Models\UserCart;
 use Exception;
@@ -67,7 +69,7 @@ class StoreController extends Controller
 
         try {
 
-            $cart = UserCart::where('user_id', Auth::user()->id)->where('status', $status)->get();
+            $cart = Cart::where('user_id', Auth::user()->id)->where('status', $status)->get();
 
 
 
@@ -102,7 +104,7 @@ class StoreController extends Controller
 
         try {
 
-            $cards = UserCards::where('user_id', Auth::user()->id)->get();
+            $cards = UserCard::where('user_id', Auth::user()->id)->get();
 
 
             return response()->json([

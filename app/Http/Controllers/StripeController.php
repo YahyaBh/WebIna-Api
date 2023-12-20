@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Products;
 use App\Models\UserCard;
 use App\Models\UserCards;
 use App\Models\UserCart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class StripeController extends Controller
@@ -35,7 +37,7 @@ class StripeController extends Controller
             'email' => 'required',
         ]);
 
-        $cart_products = Cart::where('user_id', auth()->user()->id)->where('status', 'incart')->get();
+        $cart_products = Cart::where('user_id', Auth::user()->id)->where('status', 'incart')->get();
 
 
         if ($cart_products->count() > 0) {
@@ -51,7 +53,7 @@ class StripeController extends Controller
 
                 // Check the card number against each pattern
                 foreach ($patterns as $type => $pattern) {
-                    if (preg_match($pattern, $cardNumber)) {
+                    if (preg_match($pattern, str_replace(' ', '', $cardNumber))) {
                         return $type;
                     }
                 }
@@ -66,7 +68,7 @@ class StripeController extends Controller
             // Create a token from the customer's credit card information
             $token = $stripe->tokens->create([
                 'card' => [
-                    'number' => trim($request->cardNumber, '\0'),
+                    'number' => $request->cardNumber,
                     'exp_month' => $request->exp_month,
                     'exp_year' => $request->exp_year,
                     'cvc' => $request->cardCvc,
@@ -115,23 +117,36 @@ class StripeController extends Controller
             }
 
 
-            foreach ($cart_products as $cart_product) {
-                // Check if the product has a valid token
-                if ($cart_product->token) {
-                    Order::create([
-                        'order_id' => Str::random(40),
-                        'user_id' => auth()->user()->id,
-                        'name' => $request->name,
-                        'order_type' => 'Paid',
-                        'product_token' => $cart_product->token || '8e478edf-9c55-4ef9-ae46-f91ddd5d285f',
-                        'bussiness_name' => $request->bussiness_name,
-                        'receiver_email' => $request->receiver_email,
-                    ]);
 
-                    // Update the product status
-                    $cart_product->update(['status' => 'purchased']);
-                }
+
+            $products = collect();
+
+            foreach ($cart_products as $cartItem) {
+                // Assuming you have a relationship between UserCart and Products
+                $product = Products::where('token', $cartItem->product_token)->first();
+
+                // Add the product to the collection
+                $products->push($product);
             }
+
+
+            foreach ($products as $product) {
+                Order::create([
+                    'order_id' => Str::random(40),
+                    'user_id' => auth()->user()->id,
+                    'name' => $request->name,
+                    'order_type' => 'Paid',
+                    'product_token' => $product->token,
+                    'bussiness_name' => $request->bussiness_name,
+                    'receiver_email' => $request->receiver_email,
+                ]);
+
+
+                $product_incart = Cart::wher('user_id', auth()->user()->id)->where('status', 'incart')->where('product_token', $product->token)->get();
+
+                $product_incart->update(['status' => 'purchased']);
+            }
+
 
 
 

@@ -24,7 +24,7 @@ class CartController extends Controller
 
 
 
-            $cart = Cart::where('user_id', $user->id)->get();
+            $cart = Cart::where('user_id', $user->id)->where('status', 'incart')->get();
 
             $products = collect();
 
@@ -58,13 +58,12 @@ class CartController extends Controller
 
             $request->validate([
                 'product_token' => 'required',
-
             ]);
 
             $user = Auth::user();
 
 
-            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
+            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->where('status', 'incart')->first();
 
             if (!$product) {
                 return response()->json([
@@ -96,7 +95,7 @@ class CartController extends Controller
             $user = Auth::user();
 
 
-            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
+            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->where('status', 'incart')->first();
 
 
             if ($product) {
@@ -133,7 +132,7 @@ class CartController extends Controller
 
             $user = Auth::user();
 
-            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
+            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->where('status', 'incart')->first();
 
             if ($product) {
                 return response()->json([
