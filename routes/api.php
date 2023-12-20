@@ -7,6 +7,7 @@ use App\Http\Controllers\Client\Store\StoreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\SocialAuthController;
+use App\Http\Controllers\StripeController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -81,6 +82,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/cart/discount/check', [Cart::class, 'discount_check']);
 
     Route::post('/order/create/paypal', [PayPalController::class, 'createOrder']);
+
+    Route::post('/order/checkout', [StripeController::class, 'checkout']);
 
     //Admin routes that require admin authentication
 

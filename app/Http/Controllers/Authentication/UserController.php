@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\VerifyEmailNotification as MailVerifyEmailNotification;
 use App\Models\User;
 use Exception;
+use Hamcrest\Type\IsString;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -49,11 +50,15 @@ class UserController extends Controller
 
         if ($request->has('avatar')) {
 
+            if (is_string($request->avatar)) {
+                $user->avatar = 'http://localhost:8000/images/users/avatar/default/default_user_icon_4_by_karmaanddestiny_de7834s.jpg';
+            } else {
 
-            $avatar = time() . '.' . $request->avatar->getClientOriginalExtension();
-            $request->avatar->move(public_path('images/users/avatar'), $avatar);
+                $avatar = time() . '.' . $request->avatar->getClientOriginalExtension();
+                $request->avatar->move(public_path('images/users/avatar'), $avatar);
 
-            $user->avatar = env('APP_URL') . '/images/users/avatar/' . $avatar;
+                $user->avatar = env('APP_URL') . '/images/users/avatar/' . $avatar;
+            }
         }
 
 
@@ -85,8 +90,6 @@ class UserController extends Controller
                 'status' => true,
                 'message' => 'password updated successfully',
             ], 200);
-
-            
         } else {
             return response()->json([
                 'status' => false,

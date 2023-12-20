@@ -14,16 +14,13 @@ return new class extends Migration
         Schema::create('user_cards', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained(); // Assuming you have a 'users' table for the foreign key
+            $table->string('card_name');
+            $table->string('card_last_four');
             $table->string('card_number');
-            $table->unsignedSmallInteger('expiry_month');
-            $table->unsignedSmallInteger('expiry_year');
-            $table->string('cvv');
-            $table->string('name');
-            $table->string('address');
-            $table->string('city');
-            $table->string('state');
-            $table->string('zip');
-            $table->string('country');
+            $table->unsignedSmallInteger('exp_month');
+            $table->unsignedSmallInteger('exp_year');
+            $table->string('cvc');
+            $table->boolean('is_default')->default(false);
             $table->string('card_type');
             $table->timestamps();
         });
