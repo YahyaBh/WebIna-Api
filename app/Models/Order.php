@@ -12,5 +12,5 @@ class Order extends Model
 
 
 
-    protected $fillable = ['order_id', 'user_id', 'order_type', 'product_token' , 'receiver_email' , 'country' , 'bussiness_name'];
+    protected $fillable = ['name' , 'order_id', 'user_id', 'order_type', 'product_token' , 'receiver_email' , 'country' , 'bussiness_name'];
 }

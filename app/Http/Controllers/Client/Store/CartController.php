@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Client\Store;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\Discount;
 use App\Models\Products;
-use App\Models\UserCart;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class Cart extends Controller
+class CartController extends Controller
 {
 
 
@@ -24,7 +24,7 @@ class Cart extends Controller
 
 
 
-            $cart = UserCart::where('user_id', $user->id)->get();
+            $cart = Cart::where('user_id', $user->id)->get();
 
             $products = collect();
 
@@ -64,7 +64,7 @@ class Cart extends Controller
             $user = Auth::user();
 
 
-            $product = UserCart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
+            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
 
             if (!$product) {
                 return response()->json([
@@ -96,7 +96,7 @@ class Cart extends Controller
             $user = Auth::user();
 
 
-            $product = UserCart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
+            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
 
 
             if ($product) {
@@ -133,7 +133,7 @@ class Cart extends Controller
 
             $user = Auth::user();
 
-            $product = UserCart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
+            $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->first();
 
             if ($product) {
                 return response()->json([
@@ -141,7 +141,7 @@ class Cart extends Controller
                     'message' => 'Product already in cart',
                 ], 404);
             } else {
-                UserCart::create([
+                Cart::create([
                     'user_id' => $user->id,
                     'product_token' => $request->product_token
                 ]);

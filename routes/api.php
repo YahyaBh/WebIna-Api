@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Authentication\UserController;
 use App\Http\Controllers\Client\Store\Cart;
+use App\Http\Controllers\Client\Store\CartController;
 use App\Http\Controllers\Client\Store\StoreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PayPalController;
@@ -74,12 +75,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
 
-    Route::get('/cart', [Cart::class, 'index']);
-    Route::post('/cart/add/product', [Cart::class, 'add_to_cart']);
-    Route::post('/cart/product', [Cart::class, 'get_cart_product']);
-    Route::post('/cart/remove/product', [Cart::class, 'remove_from_cart']);
+    Route::get('/cart', [CartController::class, 'index']);
+    Route::post('/cart/add/product', [CartController::class, 'add_to_cart']);
+    Route::post('/cart/product', [CartController::class, 'get_cart_product']);
+    Route::post('/cart/remove/product', [CartController::class, 'remove_from_cart']);
 
-    Route::post('/cart/discount/check', [Cart::class, 'discount_check']);
+    Route::post('/cart/discount/check', [CartController::class, 'discount_check']);
 
     Route::post('/order/create/paypal', [PayPalController::class, 'createOrder']);
 
