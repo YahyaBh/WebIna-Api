@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Client\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Order;
 use App\Models\Products;
 use App\Models\projects;
 use App\Models\UserCard;
@@ -69,23 +70,30 @@ class StoreController extends Controller
 
         try {
 
-            $cart = Cart::where('user_id', Auth::user()->id)->where('status', $status)->get();
+            if ($status === 'purchased') {
 
+                $cart = Cart::where('user_id', Auth::user()->id)->where('status', $status)->get();
 
+                $products = collect();
+                $orders = collect();
 
-            $products = collect();
+                foreach ($cart as $cartItem) {
+                    // Assuming you have a relationship between UserCart and Products
+                    $product = Products::where('token', $cartItem->product_token)->first();
 
-            foreach ($cart as $cartItem) {
-                // Assuming you have a relationship between UserCart and Products
-                $product = Products::where('token', $cartItem->product_token)->first();
+                    // Add the product to the collection
+                    $products->push($product);
 
-                // Add the product to the collection
-                $products->push($product);
+                    $order = Order::where('user_id', Auth::user()->id)->where('product_token', $cartItem->product_token)->first();
+
+                    $orders->push($order);
+                }
             }
 
             return response()->json([
                 'status' => 'success',
-                'products' => $products
+                'products' => $products,
+                'orders' => $orders
             ], 200);
         } catch (Exception $e) {
 

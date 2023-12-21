@@ -138,13 +138,14 @@ class StripeController extends Controller
                     'order_type' => 'Paid',
                     'product_token' => $product->token,
                     'bussiness_name' => $request->bussiness_name,
-                    'receiver_email' => $request->receiver_email,
+                    'receiver_email' => $request->email,
+                    'country' => $request->country,
                 ]);
 
 
-                $product_incart = Cart::wher('user_id', auth()->user()->id)->where('status', 'incart')->where('product_token', $product->token)->get();
-
-                $product_incart->update(['status' => 'purchased']);
+                Cart::where('user_id', auth()->user()->id)->where('status', 'incart')->where('product_token', $product->token)->update([
+                    'status' => 'purchased',
+                ]);
             }
 
 
