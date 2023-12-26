@@ -24,5 +24,10 @@ class UserCard extends Model
         'card_type',
     ];
 
+
+    protected $hidden = [
+        'card_number',
+        'cvc'
+    ];
     
 }

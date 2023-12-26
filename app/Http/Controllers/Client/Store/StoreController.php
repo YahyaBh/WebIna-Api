@@ -26,6 +26,7 @@ class StoreController extends Controller
             $hot_products = Products::all()->take(6);
             $porjects = projects::all()->take(6);
 
+
             return response()->json([
                 'status' => 'success',
                 'products' => $products,
@@ -39,6 +40,7 @@ class StoreController extends Controller
             ], 401);
         }
     }
+
 
 
     public function downloadPdf($token)
@@ -88,13 +90,30 @@ class StoreController extends Controller
 
                     $orders->push($order);
                 }
-            }
 
-            return response()->json([
-                'status' => 'success',
-                'products' => $products,
-                'orders' => $orders
-            ], 200);
+                return response()->json([
+                    'status' => 'success',
+                    'products' => $products,
+                    'orders' => $orders
+                ], 200);
+            } else {
+                $cart = Cart::where('user_id', Auth::user()->id)->where('status', $status)->get();
+
+                $products = collect();
+
+                foreach ($cart as $cartItem) {
+                    // Assuming you have a relationship between UserCart and Products
+                    $product = Products::where('token', $cartItem->product_token)->first();
+
+                    // Add the product to the collection
+                    $products->push($product);
+                }
+
+                return response()->json([
+                    'status' => 'success',
+                    'products' => $products,
+                ], 200);
+            }
         } catch (Exception $e) {
 
             return response()->json([
@@ -110,23 +129,23 @@ class StoreController extends Controller
     {
 
 
-        try {
+        $cards = UserCard::where('user_id', Auth::user()->id)->get();
 
-            $cards = UserCard::where('user_id', Auth::user()->id)->get();
-
+        if ($cards) {
 
             return response()->json([
                 'status' => 'success',
                 'cards' => $cards
             ], 200);
-        } catch (Exception $e) {
+        } else {
 
             return response()->json([
                 'status' => 'failed',
-                'message' => $e->getMessage()
+                'cards' => 'No cards found'
             ], 401);
         }
     }
+
 
 
 

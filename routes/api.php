@@ -70,7 +70,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/user/update', [UserController::class, 'update']);
     Route::post('/user/password/update', [UserController::class, 'passwordUpdate']);
 
-    Route::post('/user/{status}', [StoreController::class, 'userProducts']);
+    Route::post('/user/cart/{status}', [StoreController::class, 'userProducts']);
     Route::post('/user/cards', [StoreController::class, 'cardsIndex']);
 
 
