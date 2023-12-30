@@ -37,10 +37,10 @@ class CartController extends Controller
             }
 
 
-
             return response()->json([
                 'success' => true,
-                'products' => $products
+                'products' => $products,
+                'cart_count' => $cart->count()
             ], 200);
         } catch (Exception $e) {
 
@@ -102,14 +102,23 @@ class CartController extends Controller
 
                 $product->delete();
 
+                $cart_count = Cart::where('user_id', $user->id)->where('status', 'incart')->count();
+
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Product removed from cart',
+                    'cart_count' => $cart_count,
                 ], 200);
             } else {
+
+                $cart_count = Cart::where('user_id', $user->id)->where('status', 'incart')->count();
+
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Product not found',
+                    'cart_count' => $cart_count,
                 ], 404);
             }
         } catch (Exception $e) {
@@ -134,10 +143,16 @@ class CartController extends Controller
 
             $product = Cart::where('user_id', $user->id)->where('product_token', $request->product_token)->where('status', 'incart')->first();
 
+
+
             if ($product) {
+
+                $cart_count = Cart::where('user_id', $user->id)->where('status', 'incart')->count();
+
                 return response()->json([
                     'success' => false,
                     'message' => 'Product already in cart',
+                    'cart_count' => $cart_count,
                 ], 404);
             } else {
                 Cart::create([
@@ -145,9 +160,12 @@ class CartController extends Controller
                     'product_token' => $request->product_token
                 ]);
 
+                $cart_count = Cart::where('user_id', $user->id)->where('status', 'incart')->count();
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Product added to cart',
+                    'cart_count' => $cart_count,
                 ], 200);
             }
         } catch (Exception $e) {
