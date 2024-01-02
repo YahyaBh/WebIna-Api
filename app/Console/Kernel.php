@@ -14,6 +14,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('http:blogs')->daily(); // Adjust the schedule as needed
+
+
+        $schedule->command('save:monthly-sales')->monthlyOn(1, '00:00');
     }
 
     /**

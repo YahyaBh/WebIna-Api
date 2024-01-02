@@ -34,9 +34,15 @@ class AdminUserController extends Controller
         $users = User::all()->count();
 
 
+        $orders = Order::all()->count();
+
+        $income = Order::all()->sum('total');
+
         return response()->json([
             'status' => true,
             'user_number' => $users,
+            'order_number' => $orders,
+            'income' => $income
         ], 200);
     }
 
@@ -87,6 +93,8 @@ class AdminUserController extends Controller
 
             $accessKeys = AccessKeys::all(); // Replace with your logic to retrieve hashes from the database
 
+            $hashMatched = '';
+
             foreach ($accessKeys as $storedHash) {
                 if (Hash::check($request->access_key, $storedHash->access_key)) {
                     // Hash matches, set the flag to true and break the loop
@@ -96,44 +104,51 @@ class AdminUserController extends Controller
                 }
             }
 
-            if ($hashMatched && $hashMatched !== '') {
+            if ($hashMatched) {
+                if ($hashMatched !== '') {
 
-                if ($request->has('avatar')) {
-                    $avatar = time() . '.' . $request->avatar->getClientOriginalExtension();
-                    $request->avatar->move(public_path('images/admins/avatar'), $avatar);
+                    if ($request->has('avatar')) {
+                        $avatar = time() . '.' . $request->avatar->getClientOriginalExtension();
+                        $request->avatar->move(public_path('images/admins/avatar'), $avatar);
 
-                    $this->emailToken =  Str::random(40);
-
-
+                        $this->emailToken =  Str::random(40);
 
 
-                    $user = User::create([
-                        'avatar' => 'images/admins/avatar/' . $avatar,
-                        'name' => $request->name,
-                        'email' => $request->email,
-                        'password' => Hash::make($request->password),
-                        'role' => $hashMatched->role,
-                        'verification_token' => $this->emailToken,
-                    ]);
+
+
+                        $user = User::create([
+                            'avatar' => 'images/admins/avatar/' . $avatar,
+                            'name' => $request->name,
+                            'email' => $request->email,
+                            'password' => Hash::make($request->password),
+                            'role' => $hashMatched->role,
+                            'verification_token' => $this->emailToken,
+                        ]);
+                    } else {
+
+
+                        $user = User::create([
+                            'avatar' => 'uploads/admins/avatar/default_avatar.png',
+                            'name' => $request->name,
+                            'email' => $request->email,
+                            'password' => Hash::make($request->password),
+                            'role' => $hashMatched->role,
+                            'email_verified' => Date::now()
+                        ]);
+                    }
+
+                    Mail::to($request->user())->send(new MailVerifyEmailNotification($user->email, $this->emailToken, $user->id, $user->name));
+
+                    return response()->json([
+                        'status' => true,
+                        'message' => 'Please verify email before you continue',
+                    ], 200);
                 } else {
-
-
-                    $user = User::create([
-                        'avatar' => 'uploads/admins/avatar/default_avatar.png',
-                        'name' => $request->name,
-                        'email' => $request->email,
-                        'password' => Hash::make($request->password),
-                        'role' => $hashMatched->role,
-                        'email_verified' => Date::now()
-                    ]);
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Access key does not match our records'
+                    ], 405);
                 }
-
-                Mail::to($request->user())->send(new MailVerifyEmailNotification($user->email, $this->emailToken, $user->id, $user->name));
-
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Please verify email before you continue',
-                ], 200);
             } else {
                 return response()->json([
                     'status' => false,
@@ -512,7 +527,7 @@ class AdminUserController extends Controller
                 'image3' => $request->has('image3') ? env('APP_URL') . '/images/store/products/' . '3' . $image3 : '',
                 'image4' => $request->has('image4') ? env('APP_URL') . '/images/store/products/' . '4' . $image4 : '',
                 'image5' => $request->has('image5') ? env('APP_URL') . '/images/store/products/' . '5'  . $image5 : '',
-                'image6' => $request->has('image6') ? env('APP_URL') . '/images/store/products/' . '6' . $image6 : '', 
+                'image6' => $request->has('image6') ? env('APP_URL') . '/images/store/products/' . '6' . $image6 : '',
                 'image7' => $request->has('image7') ? env('APP_URL') . '/images/store/products/' . '7'  . $image7 : '',
                 'rating' => $request->rating ?? 0,
                 'purchases' => $request->purchases ?? 0,

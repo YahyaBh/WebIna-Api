@@ -36,6 +36,8 @@ return new class extends Migration
             $table->string('last_updated');
             $table->string('link')->nullable();
             $table->string('pdf')->nullable();
+            $table->enum('type', ['free', 'paid'])->default('paid');
+            $table->string('hot_deal')->nullable();
             $table->timestamps();
         });
     }

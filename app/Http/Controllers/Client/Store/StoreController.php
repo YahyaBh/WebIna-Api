@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client\Store;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ads;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Products;
@@ -26,9 +27,11 @@ class StoreController extends Controller
             $hot_products = Products::all()->take(6);
             $porjects = projects::all()->take(6);
 
+            $ad = Ads::where('for' , 'store')->first();
 
             return response()->json([
                 'status' => 'success',
+                'ad' => $ad,
                 'products' => $products,
                 'hot_products' => $hot_products,
                 'porjects' => $porjects,
