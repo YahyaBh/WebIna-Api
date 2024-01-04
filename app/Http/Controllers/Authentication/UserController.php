@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Authentication;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PasswordResetMail;
 use App\Mail\VerifyEmailNotification as MailVerifyEmailNotification;
 use App\Models\User;
 use Exception;
 use Hamcrest\Type\IsString;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Mailer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -325,18 +328,22 @@ class UserController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if ($user) {
-            $status = Password::sendResetLink(
-                $request->only('email')
-            );
 
 
-            $status === Password::RESET_LINK_SENT
-                ? back()->with(['status' => __($status)])
-                : back()->withErrors(['email' => __($status)]);
+
+            $token_numbers = rand(100000, 999999);
+
+
+            $user->verification_token = $token_numbers;
+            $user->save();
+
+            Mail::to($user->email)->send(new PasswordResetMail($token_numbers , $user->name));
+
+
 
             return response()->json([
                 'status' => true,
-                'message' => $status
+                'message' => 'email sent'
             ], 200);
         } else {
             return response()->json([

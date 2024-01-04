@@ -38,11 +38,34 @@ class AdminUserController extends Controller
 
         $income = Order::all()->sum('total');
 
+        $latest_orders = Order::latest()->take(5)->get();
+
+
+        $orders_data = [];
+
+        foreach ($latest_orders as $order) {
+
+            $user = User::where('id', $order->user_id)->first();
+
+            $product = Products::where('token', $order->product_token)->first();
+
+            $orders_data[] = [
+                'id' => $order->id,
+                'order_type' => $order->order_type,
+                'total' => $order->total,
+                'created_at' => $order->created_at,
+                'product_name' => $product->name,
+                'user_name' => $user->name,
+                'price' => $product->price
+            ];
+        }
+
         return response()->json([
             'status' => true,
             'user_number' => $users,
-            'order_number' => $orders,
-            'income' => $income
+            'orders_number' => $orders,
+            'income' => $income,
+            'latest_orders' => $orders_data
         ], 200);
     }
 
