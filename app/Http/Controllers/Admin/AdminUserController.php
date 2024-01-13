@@ -31,6 +31,10 @@ class AdminUserController extends Controller
     public function index()
     {
 
+        $recent_orders = Order::orderBy('created_at', 'desc')->take(10)->get();
+
+
+        $pending_projects = projects::all();
 
         $monthlyOrderCounts = [];
 
@@ -84,10 +88,42 @@ class AdminUserController extends Controller
             'income_total' => $income_total,
             'users_total' => $users_total,
             'percentage_change' => $percentageChange,
-            'percentage_change_income' => $percentageChangeIncome
+            'percentage_change_income' => $percentageChangeIncome,
+            'recent_orders' => $recent_orders,
+            'pending_projects' => $pending_projects 
         ], 200);
     }
 
+    public function users(Request $request)
+    {
+
+        if ($request->has('status')) {
+            $users = User::where('status', $request->status)->get();
+        } else {
+            $users = User::all();
+        }
+
+        return response()->json([
+            'status' => true,
+            'users' => $users,
+        ]);
+    }
+
+
+    public function admins(Request $request)
+    {
+
+        if ($request->has('role')) {
+            $users = User::where('role', $request->role)->get();
+        } else {
+            $users = User::all();
+        }
+
+        return response()->json([
+            'status' => true,
+            'users' => $users,
+        ]);
+    }
 
     public function orders(Request $request)
     {

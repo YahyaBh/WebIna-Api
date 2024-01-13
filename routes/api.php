@@ -110,6 +110,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 Route::get('/admin/dashboard', [AdminUserController::class, 'index']);
 
+Route::get('/admin/users', [AdminUserController::class, 'users']);
+
+Route::get('/admin/admins', [AdminUserController::class, 'admins']);
+
+
 Route::post('/admin/orders', [AdminUserController::class, 'orders']);
 
 Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
