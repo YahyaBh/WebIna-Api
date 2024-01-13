@@ -140,6 +140,7 @@ class StripeController extends Controller
                     'bussiness_name' => $request->bussiness_name,
                     'receiver_email' => $request->email,
                     'country' => $request->country,
+                    'total' => $request->total,
                 ]);
 
 

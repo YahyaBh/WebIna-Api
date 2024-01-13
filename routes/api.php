@@ -91,18 +91,33 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
     Route::group(['middleware' => ['admin']], function () {
-        Route::post('/admin/dashboard', [AdminUserController::class, 'index']);
+        // Route::get('/admin/dashboard', [AdminUserController::class, 'index']);
 
-        Route::post('/admin/orders', [AdminUserController::class, 'orders']);
+        // Route::post('/admin/orders', [AdminUserController::class, 'orders']);
 
-        Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
+        // Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
 
-        Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
+        // Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
 
-        Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
+        // Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
 
-        Route::post('/admin/home/testemonials', [AdminUserController::class, 'testimonialsHome']);
+        // Route::post('/admin/home/testemonials', [AdminUserController::class, 'testimonialsHome']);
 
-        Route::post('/admin/product/create', [AdminUserController::class, 'createProduct']);
+        // Route::post('/admin/product/create', [AdminUserController::class, 'createProduct']);
     });
 });
+
+
+Route::get('/admin/dashboard', [AdminUserController::class, 'index']);
+
+Route::post('/admin/orders', [AdminUserController::class, 'orders']);
+
+Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
+
+Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
+
+Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
+
+Route::post('/admin/home/testemonials', [AdminUserController::class, 'testimonialsHome']);
+
+Route::post('/admin/product/create', [AdminUserController::class, 'createProduct']);

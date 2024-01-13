@@ -31,41 +31,60 @@ class AdminUserController extends Controller
     public function index()
     {
 
-        $users = User::all()->count();
+
+        $monthlyOrderCounts = [];
 
 
-        $orders = Order::all()->count();
-
-        $income = Order::all()->sum('total');
-
-        $latest_orders = Order::latest()->take(5)->get();
-
-
-        $orders_data = [];
-
-        foreach ($latest_orders as $order) {
-
-            $user = User::where('id', $order->user_id)->first();
-
-            $product = Products::where('token', $order->product_token)->first();
-
-            $orders_data[] = [
-                'id' => $order->id,
-                'order_type' => $order->order_type,
-                'total' => $order->total,
-                'created_at' => $order->created_at,
-                'product_name' => $product->name,
-                'user_name' => $user->name,
-                'price' => $product->price
-            ];
+        for ($month = 1; $month <= 12; $month++) {
+            $orders = Order::whereMonth('created_at', '=', str_pad($month, 2, '0', STR_PAD_LEFT))->get();
+            array_push($monthlyOrderCounts, $orders->count());
         }
+
+        $users_total = User::where('role', 'client')->count();
+
+        // Retrieve last month's users
+        $lastMonthUsers = User::whereMonth('created_at', '=', Carbon::now()->subMonth()->month)->get();
+
+        $thisMonthUsers = User::whereMonth('created_at', '=', Carbon::now()->month)->get();
+
+        $lastMonthUserCount = $lastMonthUsers->count();
+        $thisMonthUserCount = $thisMonthUsers->count();
+
+        $percentageChange = 0;
+
+        if ($lastMonthUserCount > 0) {
+            $percentageChange = (($thisMonthUserCount - $lastMonthUserCount) / $lastMonthUserCount) * 100;
+        } else {
+            $percentageChange = ($thisMonthUserCount - $lastMonthUserCount) * 100;
+        }
+
+        //
+
+        $income_total = Order::where('order_type', '=', 'Paid')->sum('total');
+
+        $lastMonthIncome = Order::whereMonth('created_at', '=', Carbon::now()->subMonth()->month)->get();
+        $thisMonthIncome = Order::whereMonth('created_at', '=', Carbon::now()->month)->get();
+
+        $lastMonthIncomeCount = $lastMonthIncome->sum('total');
+        $thisMonthIncomeCount = $thisMonthIncome->sum('total');
+
+        $percentageChangeIncome = 0;
+
+        if ($lastMonthIncomeCount > 0) {
+            $percentageChangeIncome = (($thisMonthIncomeCount - $lastMonthIncomeCount) / $lastMonthIncomeCount) * 100;
+        } else {
+            $percentageChangeIncome = ($thisMonthIncomeCount - $lastMonthIncomeCount) * 100;
+        }
+
+
 
         return response()->json([
             'status' => true,
-            'user_number' => $users,
-            'orders_number' => $orders,
-            'income' => $income,
-            'latest_orders' => $orders_data
+            'orders_count' => $monthlyOrderCounts,
+            'income_total' => $income_total,
+            'users_total' => $users_total,
+            'percentage_change' => $percentageChange,
+            'percentage_change_income' => $percentageChangeIncome
         ], 200);
     }
 

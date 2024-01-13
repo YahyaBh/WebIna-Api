@@ -18,11 +18,13 @@ return new class extends Migration
             $table->string('bussiness_name')->nullable();
             $table->string('receiver_email');
             $table->string('country')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->integer('total');
             $table->enum('order_type', ['Paid', 'Pending', 'Cancelled', 'Verified', 'Delivered', 'Returned'])->default('Pending');
             $table->foreignId('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('product_token');
-            $table->string('total');
             $table->timestamps();
         });
     }
