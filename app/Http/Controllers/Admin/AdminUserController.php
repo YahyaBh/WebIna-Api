@@ -185,9 +185,9 @@ class AdminUserController extends Controller
     {
 
         if ($request->has('status')) {
-            $users = User::where('status', $request->status)->get();
+            $users = User::where('status', $request->status)->where('role', 'client')->get();
         } else {
-            $users = User::all();
+            $users = User::where('role', 'client')->get();
         }
 
         return response()->json([
@@ -201,14 +201,14 @@ class AdminUserController extends Controller
     {
 
         if ($request->has('role')) {
-            $users = User::where('role', $request->role)->get();
+            $admins = User::where('role', $request->role)->where('role', '!=', 'client')->get();
         } else {
-            $users = User::all();
+            $admins = User::where('role', '!=', 'client')->get();
         }
 
         return response()->json([
             'status' => true,
-            'users' => $users,
+            'admins' => $admins,
         ]);
     }
 
@@ -393,7 +393,23 @@ class AdminUserController extends Controller
         ], 200);
     }
 
+    public function order_search($search)
+    {
+        $product = Order::where('order_id', 'like', '%' . $search . '%')->orWhere('name', 'like', '%' . $search . '%')->get();
 
+
+        if ($product) {
+            return response()->json([
+                'status' => true,
+                'products' => $product,
+            ]);
+        } else {
+            return response()->json([
+                'status' => true,
+                'products' => 'No product found',
+            ], 404);
+        }
+    }
 
 
     public function register(Request $request)

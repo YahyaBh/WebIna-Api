@@ -112,13 +112,15 @@ Route::get('/admin/dashboard', [AdminUserController::class, 'index']);
 
 Route::get('/admin/users', [AdminUserController::class, 'users']);
 
+Route::get('/admin/admins', [AdminUserController::class, 'admins']);
+
+
 Route::get('/admin/products', [AdminUserController::class, 'products']);
 
 Route::get('/admin/product/search/{search}', [AdminUserController::class, 'product_search']);
 
 Route::post('/admin/product/new', [AdminUserController::class, 'new_product']);
 
-Route::get('/admin/admins', [AdminUserController::class, 'admins']);
 
 Route::post('/admin/orders', [AdminUserController::class, 'orders']);
 
