@@ -36,36 +36,93 @@ class AdminUserController extends Controller
 
         $pending_projects = projects::all();
 
+
+
+        //Months Orders Count
         $monthlyOrderCounts = [];
+        $xAxisLabelsMonths = [];
 
+        // Get the start of the current month
+        $currentMonth = now()->startOfMonth();
 
-        for ($month = 1; $month <= 12; $month++) {
-            $orders = Order::whereMonth('created_at', '=', str_pad($month, 2, '0', STR_PAD_LEFT))->get();
+        // Iterate over the last 12 months, starting from the current month and going back
+        for ($month = 11; $month >= 0; $month--) {
+            $startOfMonth = $currentMonth->copy()->subMonths($month);
+            $endOfMonth = $startOfMonth->copy()->endOfMonth();
+
+            // Convert the timestamps to UTC when querying the database
+            $orders = Order::whereBetween('created_at', [
+                $startOfMonth->toDateTimeString(),
+                $endOfMonth->toDateTimeString()
+            ])->get();
+
+            // Collect the monthly order count
             array_push($monthlyOrderCounts, $orders->count());
+
+            // Generate xAxis labels for months in UTC
+            $label = $startOfMonth->format('M Y'); // Adding the month and year to the label
+            array_push($xAxisLabelsMonths, $label);
         }
 
 
-        $hourlyOrderCounts = [];
 
-        // Assuming a 24-hour day
-        for ($hour = 0; $hour < 24; $hour++) {
-            $startHour = now()->subHours(24)->startOfHour()->addHours($hour);
+        //Hours Orders Count
+        $hourlyOrderCounts = [];
+        $xAxisLabelsHours = [];
+
+        // Get the start of the current hour
+        $currentHour = now()->startOfHour();
+
+        // Iterate over the last 24 hours, starting from the current hour and going back
+        for ($hour = 23; $hour >= 0; $hour--) {
+            $startHour = $currentHour->copy()->subHours($hour);
             $endHour = $startHour->copy()->addHour();
 
-            $orders = Order::whereBetween('created_at', [$startHour, $endHour])->get();
+            // Convert the timestamps to UTC when querying the database
+            $orders = Order::whereBetween('created_at', [
+                $startHour->toDateTimeString(),
+                $endHour->toDateTimeString()
+            ])->get();
+
+            // Collect the hourly order count
             array_push($hourlyOrderCounts, $orders->count());
+
+            // Generate xAxis labels for hours in UTC
+            $label = $startHour->format('D H:i'); // Adding the day of the week and hour to the label
+            array_push($xAxisLabelsHours, $label);
         }
 
-        $dailyOrderCounts = [];
 
-        // Assuming a 7-day week
-        for ($day = 0; $day < 7; $day++) {
-            $startOfDay = now()->startOfWeek()->addDays($day);
+        //Week Orders Count
+        $dailyOrderCounts = [];
+        $xAxisLabelsDays = [];
+
+        // Get the start of today
+        $today = now()->startOfDay();
+
+        // Iterate over the last 7 days, starting from today and going back
+        for ($day = 6; $day >= 0; $day--) {
+            $startOfDay = $today->copy()->subDays($day);
             $endOfDay = $startOfDay->copy()->endOfDay();
 
-            $orders = Order::whereBetween('created_at', [$startOfDay, $endOfDay])->get();
+            // Convert the timestamps to UTC when querying the database
+            $orders = Order::whereBetween('created_at', [
+                $startOfDay->toDateTimeString(),
+                $endOfDay->toDateTimeString()
+            ])->get();
+
+            // Collect the daily order count
             array_push($dailyOrderCounts, $orders->count());
+
+            // Generate xAxis labels for days in UTC
+            $label = $startOfDay->format('D H:i'); // Adding the day of the week and hour to the label
+            array_push($xAxisLabelsDays, $label);
         }
+
+        // Output the results for each day
+
+
+
 
         $users_total = User::where('role', 'client')->count();
 
@@ -105,6 +162,8 @@ class AdminUserController extends Controller
 
 
 
+
+
         return response()->json([
             'status' => true,
             'income_total' => $income_total,
@@ -114,8 +173,11 @@ class AdminUserController extends Controller
             'recent_orders' => $recent_orders,
             'pending_projects' => $pending_projects,
             'monthly_orders_count' => $monthlyOrderCounts,
-            'weekly_order_counts' => $dailyOrderCounts,
-            'hourly_order_counts' => $hourlyOrderCounts
+            'week_orders_count' => $dailyOrderCounts,
+            'hourly_order_counts' => $hourlyOrderCounts,
+            'xAxisLabelsHours' => $xAxisLabelsHours,
+            'xAxisLabelsWeek' => $xAxisLabelsDays,
+            'xAxisLabelsMonth' => $xAxisLabelsMonths,
         ], 200);
     }
 
@@ -231,49 +293,49 @@ class AdminUserController extends Controller
                 $image1 = time() . '.' . $request->image1->getClientOriginalExtension();
                 $request->image1->move(public_path('images/store/products'), $image1);
 
-                $product->image1 = $image1;
+                $product->image1 = env('APP_URL') . '/images/store/products/' . $image1;
 
                 if ($request->has('image2')) {
 
                     $image2 = time() . '.' . $request->image2->getClientOriginalExtension();
                     $request->image2->move(public_path('images/store/products/'),  '2' . $image2);
 
-                    $product->image2 = $image2;
+                    $product->image2 = env('APP_URL') . '/images/store/products/' . $image2;
 
                     if ($request->has('image3')) {
 
                         $image3 = time() . '.' . $request->image3->getClientOriginalExtension();
                         $request->image3->move(public_path('images/store/products/'),  '3' . $image3);
 
-                        $product->image3 = $image3;
+                        $product->image3 = env('APP_URL') . '/images/store/products/' . $image3;
 
                         if ($request->has('image4')) {
 
                             $image4 = time() . '.' . $request->image4->getClientOriginalExtension();
                             $request->image4->move(public_path('images/store/products/'),  '4' . $image4);
 
-                            $product->image4 = $image4;
+                            $product->image4 = env('APP_URL') . '/images/store/products/' . $image4;
 
                             if ($request->has('image5')) {
 
                                 $image5 = time() . '.' . $request->image5->getClientOriginalExtension();
                                 $request->image5->move(public_path('images/store/products/'),  '5' . $image5);
 
-                                $product->image5 = $image5;
+                                $product->image5 = env('APP_URL') . '/images/store/products/' . $image5;
 
                                 if ($request->has('image6')) {
 
                                     $image6 = time() . '.' . $request->image6->getClientOriginalExtension();
                                     $request->image6->move(public_path('images/store/products/'),  '6' . $image6);
 
-                                    $product->image6 = $image6;
+                                    $product->image6 = env('APP_URL') . '/images/store/products/' . $image6;
 
                                     if ($request->has('image7')) {
 
                                         $image7 = time() . '.' . $request->image7->getClientOriginalExtension();
                                         $request->image7->move(public_path('images/store/products/'),  '7' . $image7);
 
-                                        $product->image7 = $image7;
+                                        $product->image7 = env('APP_URL') . '/images/store/products/' . $image7;
                                     }
                                 }
                             }
