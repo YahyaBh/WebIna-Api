@@ -44,6 +44,29 @@ class AdminUserController extends Controller
             array_push($monthlyOrderCounts, $orders->count());
         }
 
+
+        $hourlyOrderCounts = [];
+
+        // Assuming a 24-hour day
+        for ($hour = 0; $hour < 24; $hour++) {
+            $startHour = now()->subHours(24)->startOfHour()->addHours($hour);
+            $endHour = $startHour->copy()->addHour();
+
+            $orders = Order::whereBetween('created_at', [$startHour, $endHour])->get();
+            array_push($hourlyOrderCounts, $orders->count());
+        }
+
+        $dailyOrderCounts = [];
+
+        // Assuming a 7-day week
+        for ($day = 0; $day < 7; $day++) {
+            $startOfDay = now()->startOfWeek()->addDays($day);
+            $endOfDay = $startOfDay->copy()->endOfDay();
+
+            $orders = Order::whereBetween('created_at', [$startOfDay, $endOfDay])->get();
+            array_push($dailyOrderCounts, $orders->count());
+        }
+
         $users_total = User::where('role', 'client')->count();
 
         // Retrieve last month's users
@@ -84,13 +107,15 @@ class AdminUserController extends Controller
 
         return response()->json([
             'status' => true,
-            'orders_count' => $monthlyOrderCounts,
             'income_total' => $income_total,
             'users_total' => $users_total,
             'percentage_change' => $percentageChange,
             'percentage_change_income' => $percentageChangeIncome,
             'recent_orders' => $recent_orders,
-            'pending_projects' => $pending_projects 
+            'pending_projects' => $pending_projects,
+            'monthly_orders_count' => $monthlyOrderCounts,
+            'weekly_order_counts' => $dailyOrderCounts,
+            'hourly_order_counts' => $hourlyOrderCounts
         ], 200);
     }
 
@@ -123,6 +148,169 @@ class AdminUserController extends Controller
             'status' => true,
             'users' => $users,
         ]);
+    }
+
+    public function products(Request $request)
+    {
+
+        if ($request->has('search')) {
+            $product = Products::where('token', $request->search)->orWhere('name', $request->search)->get();
+
+            if ($product) {
+                return response()->json([
+                    'status' => true,
+                    'products' => $product,
+                ]);
+            } else {
+                return response()->json([
+                    'status' => true,
+                    'products' => 'No product found',
+                ], 404);
+            }
+        } else {
+            if ($request->has('status')) {
+                $products = Products::where('status', $request->status)->get();
+            } else {
+                $products = Products::all();
+            }
+
+            return response()->json([
+                'status' => true,
+                'products' => $products,
+            ]);
+        }
+    }
+
+    public function product_search($search)
+    {
+
+
+
+        $product = Products::where('token', 'like', '%' . $search . '%')->orWhere('name', 'like', '%' . $search . '%')->get();
+
+
+        if ($product) {
+            return response()->json([
+                'status' => true,
+                'products' => $product,
+            ]);
+        } else {
+            return response()->json([
+                'status' => true,
+                'products' => 'No product found',
+            ], 404);
+        }
+    }
+
+    public function new_product(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required|unique:products',
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'status' => 'required',
+            'image1' => 'required|image',
+            'image2' => 'required|image',
+            'category' => 'required',
+            'tags' => 'required',
+            'publisher' => 'required',
+            'creationDate' => 'required',
+            'type' => 'required',
+        ]);
+
+
+
+        try {
+
+            $product = new Products();
+
+            if ($request->has('image1')) {
+
+                $image1 = time() . '.' . $request->image1->getClientOriginalExtension();
+                $request->image1->move(public_path('images/store/products'), $image1);
+
+                $product->image1 = $image1;
+
+                if ($request->has('image2')) {
+
+                    $image2 = time() . '.' . $request->image2->getClientOriginalExtension();
+                    $request->image2->move(public_path('images/store/products/'),  '2' . $image2);
+
+                    $product->image2 = $image2;
+
+                    if ($request->has('image3')) {
+
+                        $image3 = time() . '.' . $request->image3->getClientOriginalExtension();
+                        $request->image3->move(public_path('images/store/products/'),  '3' . $image3);
+
+                        $product->image3 = $image3;
+
+                        if ($request->has('image4')) {
+
+                            $image4 = time() . '.' . $request->image4->getClientOriginalExtension();
+                            $request->image4->move(public_path('images/store/products/'),  '4' . $image4);
+
+                            $product->image4 = $image4;
+
+                            if ($request->has('image5')) {
+
+                                $image5 = time() . '.' . $request->image5->getClientOriginalExtension();
+                                $request->image5->move(public_path('images/store/products/'),  '5' . $image5);
+
+                                $product->image5 = $image5;
+
+                                if ($request->has('image6')) {
+
+                                    $image6 = time() . '.' . $request->image6->getClientOriginalExtension();
+                                    $request->image6->move(public_path('images/store/products/'),  '6' . $image6);
+
+                                    $product->image6 = $image6;
+
+                                    if ($request->has('image7')) {
+
+                                        $image7 = time() . '.' . $request->image7->getClientOriginalExtension();
+                                        $request->image7->move(public_path('images/store/products/'),  '7' . $image7);
+
+                                        $product->image7 = $image7;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            $product->token = $request->token;
+            $product->name =  $request->name;
+            $product->description = $request->description;
+            $product->price = $request->price;
+            $product->status = $request->status;
+            $product->rating = $request->initRating;
+            $product->downloads = $request->initDownloads;
+            $product->views = $request->initViews;
+            $product->purchases = $request->initPurchases;
+            $product->category = $request->category;
+            $product->tags = $request->tags;
+            $product->publisher = $request->publisher;
+            $product->last_updated = $request->creationDate;
+            $product->type = $request->type;
+
+
+            $product->save();
+
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Product created successfully'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     public function orders(Request $request)
