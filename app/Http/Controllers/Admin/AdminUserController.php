@@ -127,9 +127,8 @@ class AdminUserController extends Controller
         $users_total = User::where('role', 'client')->count();
 
         // Retrieve last month's users
-        $lastMonthUsers = User::whereMonth('created_at', '=', Carbon::now()->subMonth()->month)->get();
-
-        $thisMonthUsers = User::whereMonth('created_at', '=', Carbon::now()->month)->get();
+        $lastMonthUsers = User::where('role', 'client')->whereMonth('created_at', '=', Carbon::now()->subMonth()->month)->get();
+        $thisMonthUsers = User::where('role', 'client')->whereMonth('created_at', '=', Carbon::now()->month)->get();
 
         $lastMonthUserCount = $lastMonthUsers->count();
         $thisMonthUserCount = $thisMonthUsers->count();
@@ -280,6 +279,8 @@ class AdminUserController extends Controller
             'publisher' => 'required',
             'creationDate' => 'required',
             'type' => 'required',
+            'file' => 'required',
+            'link' => 'required',
         ]);
 
 
@@ -300,42 +301,42 @@ class AdminUserController extends Controller
                     $image2 = time() . '.' . $request->image2->getClientOriginalExtension();
                     $request->image2->move(public_path('images/store/products/'),  '2' . $image2);
 
-                    $product->image2 = env('APP_URL') . '/images/store/products/' . $image2;
+                    $product->image2 = env('APP_URL') . '/images/store/products/2' . $image2;
 
                     if ($request->has('image3')) {
 
                         $image3 = time() . '.' . $request->image3->getClientOriginalExtension();
                         $request->image3->move(public_path('images/store/products/'),  '3' . $image3);
 
-                        $product->image3 = env('APP_URL') . '/images/store/products/' . $image3;
+                        $product->image3 = env('APP_URL') . '/images/store/products/3' . $image3;
 
                         if ($request->has('image4')) {
 
                             $image4 = time() . '.' . $request->image4->getClientOriginalExtension();
                             $request->image4->move(public_path('images/store/products/'),  '4' . $image4);
 
-                            $product->image4 = env('APP_URL') . '/images/store/products/' . $image4;
+                            $product->image4 = env('APP_URL') . '/images/store/products/4' . $image4;
 
                             if ($request->has('image5')) {
 
                                 $image5 = time() . '.' . $request->image5->getClientOriginalExtension();
                                 $request->image5->move(public_path('images/store/products/'),  '5' . $image5);
 
-                                $product->image5 = env('APP_URL') . '/images/store/products/' . $image5;
+                                $product->image5 = env('APP_URL') . '/images/store/products/5' . $image5;
 
                                 if ($request->has('image6')) {
 
                                     $image6 = time() . '.' . $request->image6->getClientOriginalExtension();
                                     $request->image6->move(public_path('images/store/products/'),  '6' . $image6);
 
-                                    $product->image6 = env('APP_URL') . '/images/store/products/' . $image6;
+                                    $product->image6 = env('APP_URL') . '/images/store/products/6' . $image6;
 
                                     if ($request->has('image7')) {
 
                                         $image7 = time() . '.' . $request->image7->getClientOriginalExtension();
                                         $request->image7->move(public_path('images/store/products/'),  '7' . $image7);
 
-                                        $product->image7 = env('APP_URL') . '/images/store/products/' . $image7;
+                                        $product->image7 = env('APP_URL') . '/images/store/products/7' . $image7;
                                     }
                                 }
                             }
@@ -343,6 +344,14 @@ class AdminUserController extends Controller
                     }
                 }
             }
+
+            $file = time() . '.' . $request->file->getClientOriginalExtension();
+            $request->file->move(public_path('/images/store/files/products'), $file);
+
+            $product->pdf = env('APP_URL') . '/images/store/files/products/' . $file;
+
+
+
 
             $product->token = $request->token;
             $product->name =  $request->name;
@@ -358,7 +367,7 @@ class AdminUserController extends Controller
             $product->publisher = $request->publisher;
             $product->last_updated = $request->creationDate;
             $product->type = $request->type;
-
+            $product->link = $request->link;
 
             $product->save();
 
