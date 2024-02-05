@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CheckoutEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Order;
@@ -150,7 +151,7 @@ class StripeController extends Controller
             }
 
 
-
+            event(new CheckoutEvent($request->name , 'Just made an order.'));
 
             // Display a success message to the user.
             return response()->json([

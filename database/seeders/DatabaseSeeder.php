@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,9 +30,9 @@ class DatabaseSeeder extends Seeder
             'views' => 152,
             'purchases' => 20,
             'downloads' => 45,
-            'status' => 'Available',
+            'status' => 'active',
             'category' => 'Website',
-            'price' => 299 , 
+            'price' => 299,
             'old_price' => 400,
             'description' => 'vMaintenance: Proper care is essential to maintain the quality and appearance of jeans. Washing and drying instructions may vary depend',
             'tags' => 'Clothing, Jeans, Trousers',
@@ -41,5 +42,16 @@ class DatabaseSeeder extends Seeder
             'last_updated' => Carbon::now()
         ]);
 
+
+        \App\Models\User::create([
+            'name' => env('ADMINISTRATION_INIT_NAME'),
+            'email' => env('ADMINISTRATION_INIT_EMAIL'),
+            'password' => Hash::make(env('ADMINISTRATION_INIT_PASSWORD')),
+            'avatar' => env('APP_URL') . '/users/avatar/avatar9.png',
+            'email_verified_at' => now(),
+            'phone' => env('ADMINISTRATION_INIT_PHONE'),
+            'role' => 'admin',
+            'status' => 'active'
+        ]);
     }
 }

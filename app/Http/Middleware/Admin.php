@@ -21,7 +21,7 @@ class Admin
         }
 
         return response()->json([
-            'message' => 'Unauthorized request',
+            'message' => 'Unauthorized , you are not an admin',
         ],405);
     }
 }

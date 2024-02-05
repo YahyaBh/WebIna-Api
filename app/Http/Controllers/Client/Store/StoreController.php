@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client\Store;
 use App\Http\Controllers\Controller;
 use App\Models\Ads;
 use App\Models\Cart;
+use App\Models\Feedback;
 use App\Models\Order;
 use App\Models\Products;
 use App\Models\projects;
@@ -27,7 +28,7 @@ class StoreController extends Controller
             $hot_products = Products::all()->take(6);
             $porjects = projects::all()->take(6);
 
-            $ad = Ads::where('for' , 'store')->first();
+            $ad = Ads::where('for', 'store')->first();
 
             return response()->json([
                 'status' => 'success',
@@ -178,6 +179,63 @@ class StoreController extends Controller
             ], 200);
         } catch (Exception $e) {
 
+            return response()->json([
+                'status' => 'failed',
+                'product' => $e->getMessage()
+            ], 401);
+        }
+    }
+
+
+    public function feedbacks(Request $request)
+    {
+
+        $request->validate([
+            'product_token' => 'required',
+        ]);
+
+        try {
+            $feedbacks = Feedback::with('user')->where('product_token', $request->product_token)->get();
+
+
+            return response()->json([
+                'status' => 'success',
+                'feedbacks' => $feedbacks
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'feedbacks' => $e->getMessage()
+            ], 401);
+        }
+    }
+
+    public function feedback_add(Request $request)
+    {
+
+        $request->validate([
+            'product_token' => 'required',
+            'text' => 'required',
+            'rating' => 'required',
+            'title' => 'required',
+        ]);
+
+
+
+        try {
+
+            $feedback = new Feedback();
+            $feedback->user_id = Auth::user()->id;
+            $feedback->product_token = $request->product_token;
+            $feedback->text = $request->text;
+            $feedback->rating = $request->rating;
+            $feedback->title = $request->title;
+            $feedback->save();
+
+            return response()->json([
+                'status' => 'success',
+            ], 200);
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'failed',
                 'product' => $e->getMessage()

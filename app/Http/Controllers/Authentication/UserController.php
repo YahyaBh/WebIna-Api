@@ -279,7 +279,7 @@ class UserController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
-            if ($user) {
+            if ($user && $user->role === 'client') {
 
 
                 if (Hash::check($request->password, $user->password)) {

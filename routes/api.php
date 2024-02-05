@@ -41,6 +41,7 @@ Route::post('/register/check-verification', [UserController::class, 'checkVerifi
 
 Route::post('/store', [StoreController::class, 'index']);
 Route::post('/store/product', [StoreController::class, 'product']);
+Route::post('/store/product/feedbacks', [StoreController::class, 'feedbacks']);
 
 
 Route::get('/store/product/download/{pdf}', [StoreController::class, 'downloadPdf']);
@@ -63,73 +64,61 @@ Route::post('/admin/register/check-verification', [AdminUserController::class, '
 
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    // Protected routes that require authentication
 
-    Route::post('/logout', [UserController::class, 'destroy']);
-    Route::post('/user', [UserController::class, 'index']);
-    Route::post('/user/update', [UserController::class, 'update']);
-    Route::post('/user/password/update', [UserController::class, 'passwordUpdate']);
+    Route::group(['middleware' => ['user']], function () {
+        // Protected routes that require authentication
+        Route::post('/logout', [UserController::class, 'destroy']);
+        Route::post('/user', [UserController::class, 'index']);
+        Route::post('/user/update', [UserController::class, 'update']);
+        Route::post('/user/password/update', [UserController::class, 'passwordUpdate']);
 
-    Route::post('/user/cart/{status}', [StoreController::class, 'userProducts']);
-    Route::post('/user/cards', [StoreController::class, 'cardsIndex']);
+        Route::post('/user/cart/{status}', [StoreController::class, 'userProducts']);
+        Route::post('/user/cards', [StoreController::class, 'cardsIndex']);
+
+
+        Route::post('/store/feedback/add', [StoreController::class, 'feedback_add']);
+
+
+        Route::get('/cart', [CartController::class, 'index']);
+        Route::post('/cart/add/product', [CartController::class, 'add_to_cart']);
+        Route::post('/cart/product', [CartController::class, 'get_cart_product']);
+        Route::post('/cart/remove/product', [CartController::class, 'remove_from_cart']);
+
+        Route::post('/cart/discount/check', [CartController::class, 'discount_check']);
+
+        Route::post('/order/create/paypal', [PayPalController::class, 'createOrder']);
+
+        Route::post('/order/checkout', [StripeController::class, 'checkout']);
+    });
 
 
 
-    Route::get('/cart', [CartController::class, 'index']);
-    Route::post('/cart/add/product', [CartController::class, 'add_to_cart']);
-    Route::post('/cart/product', [CartController::class, 'get_cart_product']);
-    Route::post('/cart/remove/product', [CartController::class, 'remove_from_cart']);
-
-    Route::post('/cart/discount/check', [CartController::class, 'discount_check']);
-
-    Route::post('/order/create/paypal', [PayPalController::class, 'createOrder']);
-
-    Route::post('/order/checkout', [StripeController::class, 'checkout']);
 
     //Admin routes that require admin authentication
-
-
-
     Route::group(['middleware' => ['admin']], function () {
-        // Route::get('/admin/dashboard', [AdminUserController::class, 'index']);
+        Route::get('/admin/dashboard', [AdminUserController::class, 'index']);
 
-        // Route::post('/admin/orders', [AdminUserController::class, 'orders']);
+        Route::get('/admin/users', [AdminUserController::class, 'users']);
 
-        // Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
+        Route::get('/admin/administrators', [AdminUserController::class, 'administrators']);
 
-        // Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
+        Route::get('/admin/products', [AdminUserController::class, 'products']);
 
-        // Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
+        Route::get('/admin/product/search/{search}', [AdminUserController::class, 'product_search']);
 
-        // Route::post('/admin/home/testemonials', [AdminUserController::class, 'testimonialsHome']);
+        Route::post('/admin/product/new', [AdminUserController::class, 'new_product']);
 
-        // Route::post('/admin/product/create', [AdminUserController::class, 'createProduct']);
+
+        Route::post('/admin/orders', [AdminUserController::class, 'orders']);
+
+        Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
+
+        Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
+
+        Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
+
+        Route::post('/admin/home/testemonials', [AdminUserController::class, 'testimonialsHome']);
+
+        Route::post('/admin/product/create', [AdminUserController::class, 'createProduct']);
     });
 });
-
-
-Route::get('/admin/dashboard', [AdminUserController::class, 'index']);
-
-Route::get('/admin/users', [AdminUserController::class, 'users']);
-
-Route::get('/admin/admins', [AdminUserController::class, 'admins']);
-
-
-Route::get('/admin/products', [AdminUserController::class, 'products']);
-
-Route::get('/admin/product/search/{search}', [AdminUserController::class, 'product_search']);
-
-Route::post('/admin/product/new', [AdminUserController::class, 'new_product']);
-
-
-Route::post('/admin/orders', [AdminUserController::class, 'orders']);
-
-Route::post('/admin/logout', [AdminUserController::class, 'destroy']);
-
-Route::post('/admin/home/edit', [AdminUserController::class, 'editHome']);
-
-Route::post('/admin/home/project', [AdminUserController::class, 'projectHome']);
-
-Route::post('/admin/home/testemonials', [AdminUserController::class, 'testimonialsHome']);
-
-Route::post('/admin/product/create', [AdminUserController::class, 'createProduct']);
