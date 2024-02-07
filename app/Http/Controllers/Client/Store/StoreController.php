@@ -24,7 +24,7 @@ class StoreController extends Controller
 
         try {
 
-            $products = Products::all();
+            $products = Products::where('status' , 'active')->get();
             $hot_products = Products::all()->take(6);
             $porjects = projects::all()->take(6);
 

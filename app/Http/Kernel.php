@@ -3,10 +3,6 @@
 namespace App\Http;
 
 use App\Http\Middleware\Admin;
-use App\Models\Analyzer;
-use App\Models\Orders;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 

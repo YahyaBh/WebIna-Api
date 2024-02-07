@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Authentication\UserController;
-use App\Http\Controllers\Client\Store\Cart;
 use App\Http\Controllers\Client\Store\CartController;
 use App\Http\Controllers\Client\Store\StoreController;
 use App\Http\Controllers\HomeController;
@@ -106,7 +105,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::get('/admin/product/search/{search}', [AdminUserController::class, 'product_search']);
 
+        Route::get('/admin/product/{token}', [AdminUserController::class, 'product_get']);
+
         Route::post('/admin/product/new', [AdminUserController::class, 'new_product']);
+
+        Route::post('/admin/product/update', [AdminUserController::class, 'update_product']);
+
+        Route::post('/admin/product/edit', [AdminUserController::class, 'edit_product']);
+
+        Route::post('/admin/product/status/update', [AdminUserController::class, 'status_update_product']);
 
 
         Route::post('/admin/orders', [AdminUserController::class, 'orders']);

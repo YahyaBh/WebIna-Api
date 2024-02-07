@@ -270,6 +270,25 @@ class AdminUserController extends Controller
         }
     }
 
+    public function product_get($token)
+    {
+
+
+        $product = Products::where('token', $token)->first();
+
+        if ($product) {
+            return response()->json([
+                'status' => true,
+                'product' => $product,
+            ]);
+        } else {
+            return response()->json([
+                'status' => true,
+                'product' => 'No product found',
+            ], 404);
+        }
+    }
+
     public function new_product(Request $request)
     {
 
@@ -390,6 +409,100 @@ class AdminUserController extends Controller
             ]);
         }
     }
+
+    public function update_product(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required',
+            'category' => 'required',
+            'tags' => 'required',
+            'publisher' => 'required',
+            'creationDate' => 'required',
+            'type' => 'required',
+            'link' => 'required',
+        ]);
+
+
+
+        try {
+
+            $product = Products::where('token', $request->token)->first();
+
+
+
+            $product->token = $request->token;
+            $product->name =  $request->name;
+            $product->description = $request->description;
+            $product->price = $request->price;
+            $product->rating = $request->initRating;
+            $product->downloads = $request->initDownloads;
+            $product->views = $request->initViews;
+            $product->purchases = $request->initPurchases;
+            $product->category = $request->category;
+            $product->tags = $request->tags;
+            $product->publisher = $request->publisher;
+            $product->last_updated = $request->creationDate;
+            $product->type = $request->type;
+            $product->link = $request->link;
+
+            $product->update();
+
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Product updated successfully'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function status_update_product(Request $request)
+    {
+
+        $request->validate([
+            'token' => 'required'
+        ]);
+
+        $product = Products::where('token', $request->token)->first();
+
+
+        if ($product) {
+            if ($product->status == 'active') {
+                $product->update([
+                    'status' => 'inactive',
+                ]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Product deactivated successfully'
+                ]);
+            } else {
+                $product->update([
+                    'status' => 'active',
+                ]);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Product activated successfully'
+                ]);
+            }
+            $product->save();
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => 'Product not found'
+            ]);
+        }
+    }
+
+
+
 
     public function orders(Request $request)
     {
@@ -689,5 +802,4 @@ class AdminUserController extends Controller
             ], 401);
         }
     }
-
 }
