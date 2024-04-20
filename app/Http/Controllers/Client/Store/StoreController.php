@@ -24,9 +24,9 @@ class StoreController extends Controller
 
         try {
 
-            $products = Products::where('status' , 'active')->get();
-            $hot_products = Products::all()->take(6);
             $porjects = projects::all()->take(6);
+            $hot_products = Products::where('hot_deal', '1')->take(6)->get();
+            $products = Products::where('status', 'active')->latest()->take(6)->get();;
 
             $ad = Ads::where('for', 'store')->first();
 

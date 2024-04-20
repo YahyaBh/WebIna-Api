@@ -38,7 +38,7 @@ Route::post('/register/check-verification', [UserController::class, 'checkVerifi
 //User Store routes
 
 
-Route::post('/store', [StoreController::class, 'index']);
+Route::get('/store', [StoreController::class, 'index']);
 Route::post('/store/product', [StoreController::class, 'product']);
 Route::post('/store/product/feedbacks', [StoreController::class, 'feedbacks']);
 
